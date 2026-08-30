@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#14A989"/>
+      <stop offset="1" stop-color="#0E8A71"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="#0C1F3B"/>
+  <!-- Neurona: soma + núcleo -->
+  <circle cx="24" cy="24" r="8" fill="url(#g)"/>
+  <circle cx="24" cy="24" r="3" fill="#0C1F3B"/>
+  <!-- Dendritas -->
+  <g stroke="#14A989" stroke-width="2.4" stroke-linecap="round">
+    <path d="M24 16V10M24 10l-3 2M24 10l3 2"/>
+    <path d="M24 32v6M24 38l-3-2M24 38l3-2"/>
+    <path d="M16 24h-6M10 24l2-3M10 24l2 3"/>
+    <path d="M32 24h6M38 24l-2-3M38 24l-2 3"/>
+    <path d="M18.3 18.3 14 14M14 14l.2 3.4M14 14l3.4.2"/>
+    <path d="M29.7 18.3 34 14M34 14l-.2 3.4M34 14l-3.4.2"/>
+    <path d="M18.3 29.7 14 34M14 34l.2-3.4M14 34l3.4-.2"/>
+    <path d="M29.7 29.7 34 34M34 34l-.2-3.4M34 34l-3.4-.2"/>
+  </g>
+</svg>

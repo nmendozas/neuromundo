@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-navy-900 antialiased;
+  }
+
+  /* Compensar la altura del navbar sticky en anclas */
+  section[id],
+  div[id] {
+    scroll-margin-top: 92px;
+  }
+
+  ::selection {
+    @apply bg-clinical-200 text-navy-950;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-clinical-400 to-clinical-300 bg-clip-text text-transparent;
+  }
+}

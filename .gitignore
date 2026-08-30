@@ -1,0 +1,14 @@
+# Entorno local / runtime
+/.run/
+*.log
+*.err.log
+
+# Dependencias
+node_modules/
+dist/
+.next/
+data/
+
+# Entorno
+.env
+.env.local

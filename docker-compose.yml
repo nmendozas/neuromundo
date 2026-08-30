@@ -1,0 +1,45 @@
+# ═══════════════════════════════════════════════════════════════
+# NeuroMundo S.A.S · Docker Compose
+# Frontend (Next.js) + Backend (Express API) — SQLite persistente
+# ═══════════════════════════════════════════════════════════════
+services:
+  neuromundo-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neuromundo-api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DB_PATH=/app/data/neuromundo.db
+      - SESSION_SECRET=${SESSION_SECRET:-neuromundo-secret-cambiar-en-produccion}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-Admin123!}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-NeuroMundo S.A.S <gerencianeuromundo@gmail.com>}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    volumes:
+      - neuromundo-data:/app/data
+    # Sin "ports": la API NO se expone a internet, solo red interna de Docker.
+
+  neuromundo-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: neuromundo-web
+    restart: unless-stopped
+    depends_on:
+      - neuromundo-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://neuromundo-api:4000
+      - NEXT_PUBLIC_WHATSAPP_NUMBER=${NEXT_PUBLIC_WHATSAPP_NUMBER:-573052743878}
+
+volumes:
+  neuromundo-data:

@@ -1,0 +1,25 @@
+# Dependencias
+/node_modules
+/.pnp
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+
+# Producción
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+
+# Variables de entorno locales
+.env*.local
+.env
+
+# Verificación de TypeScript
+next-env.d.ts
