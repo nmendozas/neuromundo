@@ -1,78 +1,76 @@
-# ═══════════════════════════════════════════════════════════
-# NeuroMundo S.A.S - Arranque local en ventanas visibles
-# Usado por iniciar-local.bat . No ejecutar a mano.
-# Resuelve 'node' por ruta absoluta (compatible con nvm4w).
-# ═══════════════════════════════════════════════════════════
-$ErrorActionPreference = 'Continue'
+# ================================================
+# NeuroMundo S.A.S - Arranque local visible
+# Abre cada servicio en su propia ventana de cmd.
+# ================================================
+$ErrorActionPreference = 'Stop'
 
-$root = Split-Path -Parent $PSScriptRoot          # ...\Neuromundo
-$runDir  = Join-Path $root '.run'
-New-Item -ItemType Directory -Force -Path $runDir | Out-Null
-
+$root        = Split-Path -Parent $PSScriptRoot
 $backendDir  = Join-Path $root 'backend'
 $frontendDir = Join-Path $root 'frontend'
+$runDir      = Join-Path $root '.run'
+New-Item -ItemType Directory -Force -Path $runDir | Out-Null
 
-# --- Ruta absoluta de node.exe (busca en rutas estandar y nvm4w) ---
-$candidates = @(
-  (Join-Path $env:ProgramFiles    'nodejs\node.exe'),
-  (Join-Path $env:LOCALAPPDATA    'Programs\nodejs\node.exe'),
-  'C:\Program Files\nodejs\node.exe',
-  'C:\nvm4w\nodejs\node.exe'
-)
+# ---------- Localizar node.exe ----------
 $nodeExe = $null
-foreach ($c in $candidates) { if ($c -and (Test-Path $c)) { $nodeExe = $c; break } }
-if (-not $nodeExe) {
-  $cmd = Get-Command node.exe -ErrorAction SilentlyContinue
-  if ($cmd) { $nodeExe = $cmd.Source }
+$candidates = @(
+  'C:\nvm4w\nodejs\node.exe',
+  'C:\Program Files\nodejs\node.exe',
+  (Join-Path $env:ProgramFiles  'nodejs\node.exe'),
+  (Join-Path $env:LOCALAPPDATA  'Programs\nodejs\node.exe')
+)
+foreach ($c in $candidates) {
+  if ($c -and (Test-Path $c)) { $nodeExe = $c; break }
 }
 if (-not $nodeExe) {
-  Write-Host ''
-  Write-Host '  [ERROR] No se encontro Node.js. Instalalo desde https://nodejs.org'
-  Write-Host ''
-  exit 1
+  $found = Get-Command node.exe -ErrorAction SilentlyContinue
+  if ($found) { $nodeExe = $found.Source }
 }
-$nodeExe = (Resolve-Path $nodeExe).Path
-Write-Host "  . Node: $nodeExe"
+if (-not $nodeExe) {
+  Write-Host '[ERROR] Node.js no encontrado.' -ForegroundColor Red
+  pause; exit 1
+}
+Write-Host "  Node: $nodeExe" -ForegroundColor Cyan
 
-# --- Ejecutable real de Next (evita el wrapper de npx) ---
-$nextBin = Join-Path $frontendDir 'node_modules\next\dist\bin\next'
-$nextJs  = Join-Path $frontendDir 'node_modules\next\dist\bin\next.js'
-
-function Test-Port([int]$Port) {
-  return [bool](Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue)
+# ---------- Helper: puerto ocupado ----------
+function Test-Port([int]$p) {
+  $null -ne (Get-NetTCPConnection -LocalPort $p -State Listen -EA SilentlyContinue)
 }
 
-# Abre una ventana cmd VISIBLE con titulo; /k mantiene la ventana abierta
-function Start-NodeVisible([string]$Title, [string[]]$ArgList, [string]$WorkingDir) {
-  $argStr  = ($ArgList | ForEach-Object { "`"$_`"" }) -join ' '
-  $cmdArgs = "/k title $Title && `"$nodeExe`" $argStr"
-  $p = Start-Process -FilePath 'cmd.exe' `
-    -ArgumentList $cmdArgs `
-    -WorkingDirectory $WorkingDir `
-    -PassThru
+# ---------- Helper: abrir ventana cmd visible ----------
+function Open-ServiceWindow([string]$Title, [string]$Cmd, [string]$Dir) {
+  $escaped = $Cmd.Replace('"', '\"')
+  $args_   = "/k title $Title && $escaped"
+  $p = Start-Process cmd.exe -ArgumentList $args_ -WorkingDirectory $Dir -PassThru
   return $p.Id
 }
 
-# --- Backend (API Express, puerto 4000) ---
+# ---------- Backend ----------
 if (Test-Port 4000) {
-  Write-Host '  . API ya estaba corriendo en el puerto 4000 (se omite).'
+  Write-Host '  API ya en :4000 (omitida).' -ForegroundColor Yellow
 } else {
-  $apiPid = Start-NodeVisible 'NeuroMundo - API :4000' @('dist/index.js') $backendDir
-  Set-Content -Path (Join-Path $runDir 'api.pid') -Value $apiPid
-  Write-Host "  . API iniciada (PID $apiPid) -> http://localhost:4000"
+  $cmd = "`"$nodeExe`" dist/index.js"
+  $pid_ = Open-ServiceWindow 'NeuroMundo - API :4000' $cmd $backendDir
+  $pid_ | Set-Content (Join-Path $runDir 'api.pid')
+  Write-Host "  API iniciada PID $pid_  ->  http://localhost:4000" -ForegroundColor Green
 }
 
-# --- Frontend (Next.js, puerto 3000) ---
+# ---------- Frontend ----------
 if (Test-Port 3000) {
-  Write-Host '  . Web ya estaba corriendo en el puerto 3000 (se omite).'
+  Write-Host '  Web ya en :3000 (omitida).' -ForegroundColor Yellow
 } else {
-  # Variables de entorno que heredan los procesos hijos
-  $env:API_URL = 'http://localhost:4000'
-  $env:NEXT_PUBLIC_WHATSAPP_NUMBER = '573052743878'
-  $env:NEXT_TELEMETRY_DISABLED = '1'
-  # Usa next.js si existe, sino el binario sin extension, sino fallback
-  $loader = if (Test-Path $nextJs) { $nextJs } elseif (Test-Path $nextBin) { $nextBin } else { 'node_modules\next\dev' }
-  $webPid = Start-NodeVisible 'NeuroMundo - Web :3000' @($loader, 'dev', '-p', '3000') $frontendDir
-  Set-Content -Path (Join-Path $runDir 'web.pid') -Value $webPid
-  Write-Host "  . Web iniciada (PID $webPid) -> http://localhost:3000"
+  $env:API_URL                      = 'http://localhost:4000'
+  $env:NEXT_PUBLIC_WHATSAPP_NUMBER  = '573052743878'
+  $env:NEXT_TELEMETRY_DISABLED      = '1'
+
+  $nextJs  = Join-Path $frontendDir 'node_modules\next\dist\bin\next.js'
+  $nextBin = Join-Path $frontendDir 'node_modules\next\dist\bin\next'
+  $loader  = if (Test-Path $nextJs) { $nextJs } elseif (Test-Path $nextBin) { $nextBin } else { '' }
+  if (-not $loader) {
+    Write-Host '[ERROR] No se encontro next.js. Ejecuta npm install en frontend/.' -ForegroundColor Red
+    pause; exit 1
+  }
+  $cmd  = "`"$nodeExe`" `"$loader`" dev -p 3000"
+  $pid_ = Open-ServiceWindow 'NeuroMundo - Web :3000' $cmd $frontendDir
+  $pid_ | Set-Content (Join-Path $runDir 'web.pid')
+  Write-Host "  Web iniciada PID $pid_  ->  http://localhost:3000" -ForegroundColor Green
 }

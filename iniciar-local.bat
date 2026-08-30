@@ -4,60 +4,73 @@ chcp 65001 >nul
 title NeuroMundo S.A.S - Iniciar entorno local
 cd /d "%~dp0"
 
-echo ==================================================
-echo   NeuroMundo S.A.S  -  Entorno local
-echo ==================================================
+echo.
+echo  ================================================
+echo    NeuroMundo S.A.S  --  Entorno local
+echo  ================================================
 echo.
 
-rem --- Comprobaciones ---
+rem --- Verificar Node.js ---
 where node >nul 2>&1
 if errorlevel 1 (
-  echo [ERROR] Node.js no esta instalado o no esta en el PATH.
-  echo         Descargalo en https://nodejs.org (version 18 o superior).
-  timeout /t 8 >nul
+  echo [ERROR] Node.js no esta instalado o no esta en PATH.
+  echo         Descargalo en https://nodejs.org (version 18+)
+  echo.
+  pause
   exit /b 1
 )
+for /f "tokens=*" %%v in ('node --version') do echo  Node: %%v
 
-rem --- Backend: instalar dependencias y compilar si hace falta ---
+rem --- Backend: dependencias ---
 if not exist "backend\node_modules" (
+  echo.
   echo [1/3] Instalando dependencias del backend...
   pushd backend
   call npm install --no-audit --no-fund
+  if errorlevel 1 ( popd & goto :error )
   popd
-  if errorlevel 1 goto :error
 )
+
+rem --- Backend: compilar TypeScript ---
 if not exist "backend\dist\index.js" (
-  echo [1/3] Compilando backend (TypeScript)...
+  echo.
+  echo [2/3] Compilando backend TypeScript...
   pushd backend
   call npm run build
+  if errorlevel 1 ( popd & goto :error )
   popd
-  if errorlevel 1 goto :error
 )
 
-rem --- Frontend: instalar dependencias si hace falta ---
+rem --- Frontend: dependencias ---
 if not exist "frontend\node_modules\next" (
-  echo [2/3] Instalando dependencias del frontend...
+  echo.
+  echo [3/3] Instalando dependencias del frontend...
   pushd frontend
   call npm install --no-audit --no-fund
+  if errorlevel 1 ( popd & goto :error )
   popd
-  if errorlevel 1 goto :error
 )
 
-echo [3/3] Arrancando servicios en segundo plano...
+echo.
+echo  Abriendo servicios en ventanas visibles...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\arrancar.ps1"
+if errorlevel 1 goto :error
 
 echo.
-echo  Sitio publico:  http://localhost:3000
-echo  Panel admin:    http://localhost:3000/login
-echo  API (health):   http://localhost:4000/healthz
+echo  ------------------------------------------------
+echo   Sitio publico :  http://localhost:3000
+echo   Panel admin   :  http://localhost:3000/login
+echo   API health    :  http://localhost:4000/healthz
+echo  ------------------------------------------------
 echo.
-echo  Para detener: haz doble clic en detener-local.bat
-echo  (Este mensaje se cerrara en 6 segundos...)
-ping 127.0.0.1 -n 7 >nul
+echo  Presiona cualquier tecla para cerrar esta ventana.
+echo  (Los servicios seguiran corriendo en sus ventanas)
+pause >nul
 exit /b 0
 
 :error
 echo.
-echo [ERROR] Ocurrio un problema durante la preparacion.
-ping 127.0.0.1 -n 11 >nul
+echo  [ERROR] Ocurrio un problema. Revisa el mensaje de arriba.
+echo.
+pause
 exit /b 1
