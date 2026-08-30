@@ -155,7 +155,7 @@ export function QuoteView({ id }: { id: string }) {
           <p className="flex w-full max-w-xs justify-between"><span className="text-slate-500">Descuento</span><span>- {formatCOP(quote.discount)}</span></p>
           <p className="flex w-full max-w-xs justify-between"><span className="text-slate-500">IVA</span><span>{formatCOP(quote.iva)}</span></p>
           <p className="flex w-full max-w-xs justify-between border-t border-slate-200 pt-2 font-display text-lg font-bold text-navy-900">
-            <span>Total</span><span className="text-clinical-600">{formatCOP(quote.total)} {quote.currency}</span>
+            <span>Total</span><span className="text-gold-600">{formatCOP(quote.total)} {quote.currency}</span>
           </p>
           {quote.notes && <p className="mt-3 w-full rounded-xl bg-slate-50 px-4 py-3 text-xs text-slate-600">📝 {quote.notes}</p>}
         </div>

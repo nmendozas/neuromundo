@@ -11,6 +11,11 @@ export interface ImportRow {
   cost_price?: number;
   sale_price?: number;
   emoji?: string;
+  image_1?: string;
+  image_2?: string;
+  image_3?: string;
+  image_4?: string;
+  image_5?: string;
 }
 
 export interface ImportError {
@@ -29,6 +34,11 @@ const FIELD_ALIASES: Record<keyof ImportRow, string[]> = {
   cost_price: ['costo', 'costo_unitario', 'cost', 'cost_price'],
   sale_price: ['precio', 'precio_venta', 'venta', 'price', 'sale_price'],
   emoji: ['emoji', 'icon', 'icono'],
+  image_1: ['imagen_1', 'image_1', 'foto_1', 'photo_1', 'imagen_principal'],
+  image_2: ['imagen_2', 'image_2', 'foto_2', 'photo_2'],
+  image_3: ['imagen_3', 'image_3', 'foto_3', 'photo_3'],
+  image_4: ['imagen_4', 'image_4', 'foto_4', 'photo_4'],
+  image_5: ['imagen_5', 'image_5', 'foto_5', 'photo_5'],
 };
 
 function normalizeHeader(header: string): string {
@@ -47,6 +57,11 @@ const rowSchema = z.object({
   cost_price: z.coerce.number().nonnegative().default(0),
   sale_price: z.coerce.number().nonnegative().default(0),
   emoji: z.string().default('🩺'),
+  image_1: z.string().url().or(z.literal('')).default(''),
+  image_2: z.string().url().or(z.literal('')).default(''),
+  image_3: z.string().url().or(z.literal('')).default(''),
+  image_4: z.string().url().or(z.literal('')).default(''),
+  image_5: z.string().url().or(z.literal('')).default(''),
 });
 
 /**
@@ -121,6 +136,8 @@ export function importRows(rows: ImportRow[]): {
       cost_price: row.cost_price ?? 0,
       sale_price: row.sale_price ?? 0,
       emoji: row.emoji || '🩺',
+      image_1: row.image_1 ?? '', image_2: row.image_2 ?? '', image_3: row.image_3 ?? '',
+      image_4: row.image_4 ?? '', image_5: row.image_5 ?? '',
     });
     imported += 1;
   }

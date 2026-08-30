@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { clientFetch } from '@/lib/client-api';
 import type { SiteInfo } from '@/types';
 import { Alert, Button, Card, Field, Input, Spinner, Textarea } from '@/components/admin/ui';
+import { DEFAULT_PORTFOLIO } from '@/config/site';
 
 const GROUPS: Array<{ title: string; fields: Array<[string, string]> }> = [
   {
@@ -117,6 +118,29 @@ export function ContentEditor() {
           </div>
         </Card>
       ))}
+
+      <Card title="Portafolio público">
+        <p className="mb-4 text-sm text-slate-500">Edita los servicios que aparecen en la vista pública <strong>/portafolio</strong>. Puedes modificar títulos, categorías, descripción y detalles.</p>
+        <Field label="Título de la vista"><Input value={content.portfolio_title ?? ''} onChange={(e) => set('portfolio_title', e.target.value)} /></Field>
+        <Field label="Subtítulo de la vista" className="mt-4"><Textarea rows={3} value={content.portfolio_subtitle ?? ''} onChange={(e) => set('portfolio_subtitle', e.target.value)} /></Field>
+        <div className="mt-6 space-y-5">
+          {(() => {
+            let services = DEFAULT_PORTFOLIO;
+            try { const parsed = JSON.parse(content.portfolio_services ?? 'null'); if (Array.isArray(parsed)) services = parsed; } catch { /* usa defaults */ }
+            return services.map((service, index) => (
+              <div key={service.id} className="rounded-xl border border-slate-200 p-4">
+                <p className="mb-3 font-semibold text-navy-900">{service.num}. {service.title}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Input aria-label="Título" value={service.title} onChange={(e) => { const next = [...services]; next[index] = { ...service, title: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Input aria-label="Categoría" value={service.category} onChange={(e) => { const next = [...services]; next[index] = { ...service, category: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Textarea aria-label="Descripción" rows={2} className="sm:col-span-2" value={service.description} onChange={(e) => { const next = [...services]; next[index] = { ...service, description: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Textarea aria-label="Detalles (uno por línea)" rows={4} className="sm:col-span-2" value={service.details.join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, details: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
+      </Card>
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={saving}>{saving ? 'Guardando…' : '💾 Guardar contenido'}</Button>

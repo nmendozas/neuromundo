@@ -1,4 +1,4 @@
-import { DEFAULT_CONTENT, DEFAULT_PARAMETERS } from '@/config/site';
+import { DEFAULT_CONTENT, DEFAULT_PARAMETERS, DEFAULT_PORTFOLIO, type PortfolioService } from '@/config/site';
 import type { Item, SiteInfo } from '@/types';
 
 const API_URL = process.env.API_URL ?? 'http://localhost:4000';
@@ -36,5 +36,15 @@ export async function fetchCatalogItems(): Promise<Item[]> {
     return Array.isArray(data) ? data : [];
   } catch {
     return [];
+  }
+}
+
+export async function fetchPortfolio(): Promise<PortfolioService[]> {
+  try {
+    const info = await fetchSiteInfo();
+    const parsed = JSON.parse(info.content.portfolio_services ?? 'null') as PortfolioService[];
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_PORTFOLIO;
+  } catch {
+    return DEFAULT_PORTFOLIO;
   }
 }

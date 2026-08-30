@@ -1,71 +1,44 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
-import { SectionHeading } from '@/components/ui/SectionHeading';
+import { whatsappLink } from '@/config/site';
 
-/** Sección "Nosotros": historia, misión, visión y valores (contenido CMS). */
+const heroImage = 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1600&q=88';
+const storyImage = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1400&q=88';
+const values = [['01', 'Cercanía', 'Escuchamos antes de proponer.'], ['02', 'Rigor', 'Cada decisión parte de evidencia.'], ['03', 'Impacto', 'Medimos lo que realmente transforma.']];
+
+/** Vista premium "Nosotros": historia, propósito y equipo (contenido CMS). */
 export function About({ content }: { content: Record<string, string> }) {
-  const cards = [
-    {
-      title: content.mission_title ?? 'Misión',
-      text: content.mission_text ?? '',
-      emoji: '🎯',
-    },
-    {
-      title: content.vision_title ?? 'Visión',
-      text: content.vision_text ?? '',
-      emoji: '🔭',
-    },
-  ];
+  const history = content.history_text ?? 'NeuroMundo nació para acompañar a las instituciones de salud con soluciones confiables, cercanas y diseñadas para el contexto colombiano.';
+  const mission = content.mission_text ?? 'Proveer soluciones que eleven la calidad, eficiencia y sostenibilidad del sector salud.';
+  const vision = content.vision_text ?? 'Ser un aliado estratégico reconocido por transformar retos complejos en resultados medibles.';
 
-  return (
-    <section id="nosotros" className="bg-white py-24 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Nosotros"
-          title={content.history_title ?? 'Nuestra historia'}
-        />
-
-        <Reveal className="mx-auto mt-8 max-w-4xl">
-          <p className="text-center text-base leading-relaxed text-slate-600 sm:text-lg">
-            {content.history_text ?? ''}
-          </p>
-        </Reveal>
-
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
-          {cards.map((card, index) => (
-            <Reveal key={card.title} delay={index * 0.1}>
-              <motion.article
-                whileHover={{ y: -6 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="relative h-full overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-navy-900 to-navy-800 p-8 text-white shadow-card"
-              >
-                <span className="absolute -right-3 -top-3 text-8xl opacity-10">{card.emoji}</span>
-                <h3 className="font-display text-2xl font-bold">{card.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">{card.text}</p>
-              </motion.article>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal delay={0.15}>
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-            {(content.values_text ?? '')
-              .split(',')
-              .map((value) => value.trim())
-              .filter(Boolean)
-              .map((value) => (
-                <span
-                  key={value}
-                  className="rounded-full border border-clinical-200 bg-clinical-50 px-5 py-2 text-sm font-semibold text-clinical-700"
-                >
-                  {value}
-                </span>
-              ))}
-          </div>
-        </Reveal>
+  return <div className="overflow-hidden bg-paper-50 text-navy-950">
+    <section className="relative isolate min-h-[760px] overflow-hidden bg-navy-950 text-white sm:min-h-[820px]">
+      <Image src={heroImage} alt="Equipo de profesionales de la salud colaborando" fill priority className="-z-20 object-cover object-center opacity-35" sizes="100vw" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#0f1826_8%,rgba(15,24,38,.86)_38%,rgba(15,24,38,.18)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_75%_22%,rgba(213,179,116,.32),transparent_25%)]" />
+      <div className="mx-auto flex min-h-[760px] max-w-7xl flex-col justify-between px-4 pb-12 pt-32 sm:min-h-[820px] sm:px-6 sm:pb-16 lg:px-8">
+        <Reveal><div className="flex items-center justify-center gap-4 text-center text-[10px] uppercase tracking-[0.28em] text-gold-300 sm:justify-start sm:text-left"><span className="h-px w-10 bg-gold-400" />02 / Nosotros</div></Reveal>
+        <div className="grid items-end gap-12 lg:grid-cols-[1fr_340px]"><Reveal className="text-center sm:text-left"><h1 className="mx-auto max-w-4xl font-display text-5xl font-semibold leading-[.94] tracking-[-.04em] sm:mx-0 sm:text-7xl lg:text-[7.25rem]">Cuidar el futuro empieza por entender el presente.</h1><p className="mx-auto mt-8 max-w-xl border-l-0 pl-0 text-sm leading-7 text-slate-300 sm:mx-0 sm:border-l sm:border-gold-400/70 sm:pl-5 sm:text-base">Conectamos conocimiento clínico, tecnología y gestión para que las instituciones de salud puedan concentrarse en lo más importante: cuidar vidas.</p></Reveal><Reveal delay={0.15} className="hidden lg:block"><div className="border border-white/20 bg-white/5 p-6 backdrop-blur-md"><p className="font-mono text-[10px] uppercase tracking-[.2em] text-gold-300">Nuestra promesa</p><p className="mt-8 font-display text-2xl leading-tight">Más claridad para tomar mejores decisiones.</p><div className="mt-10 flex justify-between border-t border-white/15 pt-4 text-[10px] uppercase tracking-wider text-slate-400"><span>NeuroMundo</span><span>Desde 2016</span></div></div></Reveal></div>
+        <Reveal delay={0.2} className="flex items-center justify-between border-t border-white/20 pt-5"><p className="w-full text-center text-[10px] uppercase tracking-[.22em] text-slate-400 sm:w-auto sm:text-left">Scroll para descubrir</p><span className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/30 text-gold-300 sm:flex" aria-hidden="true">↓</span></Reveal>
       </div>
     </section>
-  );
+
+    <section className="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 sm:py-36 sm:text-left lg:px-8"><div className="grid gap-16 lg:grid-cols-[.72fr_1.28fr] lg:gap-28"><Reveal><p className="flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[.22em] text-gold-600 sm:justify-start"><span className="h-px w-8 bg-gold-500" />01 / Origen</p><h2 className="mx-auto mt-7 max-w-sm font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:mx-0 sm:text-6xl">El cuidado también se gestiona.</h2></Reveal><Reveal delay={0.1}><p className="mx-auto max-w-2xl text-xl leading-relaxed text-navy-800 sm:text-2xl">{history}</p><div className="mt-12 grid grid-cols-2 gap-8 border-t border-navy-200 pt-7 sm:grid-cols-3"><div><p className="font-display text-4xl text-gold-600">10+</p><p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Años de experiencia</p></div><div><p className="font-display text-4xl text-gold-600">24/7</p><p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Acompañamiento</p></div><div className="col-span-2 sm:col-span-1"><p className="font-display text-4xl text-gold-600">1</p><p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Propósito compartido</p></div></div></Reveal></div></section>
+
+    <section className="bg-navy-950 text-white"><div className="mx-auto grid max-w-7xl lg:grid-cols-[.9fr_1.1fr]"><Reveal className="relative min-h-[500px] lg:min-h-[680px]"><Image src={storyImage} alt="Profesional de la salud en un entorno clínico" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 45vw" /><div className="absolute inset-6 border border-white/30" /><p className="absolute bottom-8 left-8 text-[10px] uppercase tracking-[.22em] text-white/70">Personas antes que procesos</p></Reveal><div className="flex flex-col justify-center px-4 py-20 sm:px-10 sm:py-28 lg:px-20"><Reveal><p className="font-mono text-[10px] uppercase tracking-[.22em] text-gold-300">02 / Convicción</p><h2 className="mt-6 max-w-xl font-display text-4xl font-semibold leading-tight sm:text-6xl">La excelencia no tiene sentido si no es humana.</h2></Reveal><div className="mt-14 grid gap-10 sm:grid-cols-2"><Reveal delay={0.1} className="border-t border-gold-400/60 pt-5"><p className="font-mono text-[10px] uppercase tracking-widest text-gold-300">Misión</p><p className="mt-5 text-sm leading-7 text-slate-300">{mission}</p></Reveal><Reveal delay={0.18} className="border-t border-white/30 pt-5"><p className="font-mono text-[10px] uppercase tracking-widest text-slate-400">Visión</p><p className="mt-5 text-sm leading-7 text-slate-300">{vision}</p></Reveal></div></div></div></section>
+
+    <section className="px-4 py-24 sm:px-6 sm:py-36 lg:px-8"><div className="mx-auto max-w-7xl"><Reveal><p className="font-mono text-[10px] uppercase tracking-[.22em] text-blue-500">03 / Nuestra forma</p><div className="mt-5 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight sm:text-6xl">Valores que se notan en cada detalle.</h2><p className="max-w-xs text-sm leading-6 text-slate-500">{content.values_text ?? 'Confianza, calidad, oportunidad, transparencia y compromiso con la vida.'}</p></div></Reveal><div className="mt-16 grid border-y border-navy-200 md:grid-cols-3">{values.map(([number, title, text], index) => <Reveal key={title} delay={index * 0.08} className="group border-b border-navy-200 py-8 md:border-b-0 md:border-r md:px-8 md:py-12 md:first:pl-0 md:last:border-r-0 md:last:pr-0"><p className="font-mono text-xs text-gold-600">{number}</p><h3 className="mt-12 font-display text-3xl transition-colors group-hover:text-gold-600">{title}</h3><p className="mt-4 text-sm text-slate-500">{text}</p></Reveal>)}</div></div></section>
+
+    <section className="bg-paper-100 px-4 py-24 sm:px-6 sm:py-36 lg:px-8"><div className="mx-auto max-w-7xl"><Reveal><p className="font-mono text-[10px] uppercase tracking-[.22em] text-gold-600">04 / El equipo</p><h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-tight sm:text-6xl">Personas que convierten la experiencia en confianza.</h2><p className="mt-6 max-w-xl text-sm leading-7 text-slate-600">Un equipo multidisciplinario que entiende la operación, el lenguaje y los desafíos reales de las instituciones de salud.</p></Reveal><div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{[
+      ['https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=88', 'Ramiro José Conde', 'Dirección estratégica'],
+      ['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=88', 'Equipo clínico', 'Excelencia asistencial'],
+      ['https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=88', 'Equipo de operaciones', 'Gestión y resultados'],
+    ].map(([image, name, role], index) => <Reveal key={name} delay={index * 0.1} className="group"><div className="relative aspect-[4/5] overflow-hidden bg-navy-900"><Image src={image} alt={`${name}, ${role}`} fill className="object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" /><div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent" /><div className="absolute bottom-0 left-0 right-0 p-6 text-white"><p className="font-display text-xl">{name}</p><p className="mt-2 text-[10px] uppercase tracking-[.18em] text-gold-300">{role}</p></div></div></Reveal>)}</div></div></section>
+
+    <section className="relative overflow-hidden bg-gold-400 px-4 py-20 sm:px-6 sm:py-28 lg:px-8"><div className="absolute -right-20 -top-32 h-80 w-80 rounded-full border border-navy-950/10" /><div className="absolute -right-4 -top-16 h-48 w-48 rounded-full border border-navy-950/10" /><Reveal className="relative mx-auto flex max-w-7xl flex-col justify-between gap-10 text-center sm:flex-row sm:items-end sm:text-left"><div><p className="font-mono text-[10px] uppercase tracking-[.22em] text-navy-800">05 / Hablemos</p><h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-tight text-navy-950 sm:text-6xl">¿Listos para transformar la forma de cuidar?</h2></div><div className="flex flex-wrap justify-center gap-3 sm:justify-start"><Link href="#contacto" className="inline-flex items-center justify-center bg-navy-950 px-6 py-4 text-xs font-semibold uppercase tracking-wider text-white transition-transform hover:-translate-y-1">Conversemos <span className="ml-4">↗</span></Link><a href={whatsappLink('Hola, quiero conocer más sobre NeuroMundo.')} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center border border-navy-950/30 px-6 py-4 text-xs font-semibold uppercase tracking-wider text-navy-950 transition-colors hover:bg-navy-950/10">WhatsApp</a></div></Reveal></section>
+  </div>;
 }

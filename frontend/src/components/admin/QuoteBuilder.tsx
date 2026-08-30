@@ -137,7 +137,7 @@ export function QuoteBuilder() {
       <Card title="Ítems de la cotización">
         <div className="mb-5 flex flex-wrap items-end gap-3">
           <Field label="Agregar del catálogo" className="min-w-[260px] flex-1">
-            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100">
+            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-100">
               <option value="">Selecciona un insumo…</option>
               {items.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -179,7 +179,7 @@ export function QuoteBuilder() {
                         step="0.01"
                         value={row.quantity}
                         onChange={(e) => updateRow(row.key, { quantity: Number(e.target.value) || 0 })}
-                        className="w-20 rounded-lg border border-slate-200 px-2 py-1.5 text-sm outline-none focus:border-clinical-400"
+                        className="w-20 rounded-lg border border-slate-200 px-2 py-1.5 text-sm outline-none focus:border-gold-400"
                       />
                     </td>
                     <td className="py-2 pr-3 text-right">
@@ -189,7 +189,7 @@ export function QuoteBuilder() {
                         step="0.01"
                         value={row.unit_price}
                         onChange={(e) => updateRow(row.key, { unit_price: Number(e.target.value) || 0 })}
-                        className="w-28 rounded-lg border border-slate-200 px-2 py-1.5 text-right text-sm outline-none focus:border-clinical-400"
+                        className="w-28 rounded-lg border border-slate-200 px-2 py-1.5 text-right text-sm outline-none focus:border-gold-400"
                       />
                     </td>
                     <td className="py-2 pr-3 text-right font-semibold">{fmt(row.quantity * row.unit_price)}</td>
@@ -210,7 +210,7 @@ export function QuoteBuilder() {
             <Input type="number" min={0} step="0.01" value={discount} onChange={(e) => setDiscount(e.target.value)} />
           </Field>
           <Field label="Modo de descuento">
-            <select value={discountMode} onChange={(e) => setDiscountMode(e.target.value as 'percent' | 'amount')} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100">
+            <select value={discountMode} onChange={(e) => setDiscountMode(e.target.value as 'percent' | 'amount')} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-100">
               <option value="percent">Porcentaje (%)</option>
               <option value="amount">Monto fijo (COP)</option>
             </select>
@@ -231,7 +231,7 @@ export function QuoteBuilder() {
           <p className="flex w-full max-w-xs justify-between"><span className="text-slate-500">Descuento</span><span>- {fmt(totals.discountValue)}</span></p>
           <p className="flex w-full max-w-xs justify-between"><span className="text-slate-500">IVA ({ivaPct}%)</span><span>{fmt(totals.iva)}</span></p>
           <p className="flex w-full max-w-xs justify-between border-t border-slate-200 pt-2 font-display text-lg font-bold text-navy-900">
-            <span>Total</span><span className="text-clinical-600">{fmt(totals.total)}</span>
+            <span>Total</span><span className="text-gold-600">{fmt(totals.total)}</span>
           </p>
         </div>
       </Card>

@@ -9,6 +9,7 @@ import { CloseIcon, MenuIcon } from '@/components/icons';
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const getHref = (href: string) => (href.startsWith('#') ? `/${href}` : href);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -19,22 +20,25 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled || open ? 'border-b border-white/10 bg-navy-950/90 backdrop-blur-md' : 'bg-transparent'
+      className={`fixed inset-x-0 top-0 z-40 border-b border-gold-500/25 bg-navy-950/95 backdrop-blur-md transition-all duration-300 ${
+        scrolled || open ? 'shadow-lg shadow-navy-950/10' : ''
       }`}
     >
-      <nav className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#top" className="flex items-center gap-2.5">
-          <Image src="/logo.svg" alt="NeuroMundo S.A.S" width={40} height={40} className="h-9 w-9" priority />
-          <span className="font-display text-base font-bold tracking-tight text-white">
-            NeuroMundo <span className="text-clinical-300">S.A.S</span>
+      <nav className="mx-auto flex min-h-[68px] max-w-7xl items-center justify-between gap-6 px-4 py-3.5 sm:px-6 lg:px-8">
+        <a href="/" className="flex shrink-0 items-center gap-2.5">
+          <Image src="/logo.png" alt="NeuroMundo S.A.S" width={60} height={34} className="h-[34px] w-auto object-contain" priority />
+          <span className="font-display text-[15px] font-semibold tracking-[0.03em] text-gold-300">
+            NeuroMundo S.A.S
           </span>
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-[22px] md:flex">
           {siteConfig.navLinks.map((link) => (
             <li key={link.href}>
-              <a href={link.href} className="text-sm font-medium text-slate-300 transition-colors hover:text-clinical-300">
+              <a
+                href={getHref(link.href)}
+                className="border-b border-transparent pb-[3px] text-[13px] font-medium uppercase tracking-[0.03em] text-white/70 transition-colors hover:border-gold-500 hover:text-gold-300"
+              >
                 {link.label}
               </a>
             </li>
@@ -43,7 +47,7 @@ export function Navbar() {
 
         <a
           href="/admin"
-          className="hidden rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:border-white/50 hover:bg-white/10 md:inline-flex"
+          className="hidden whitespace-nowrap rounded-lg bg-gold-500 px-[18px] py-[9px] text-xs font-bold uppercase tracking-[0.04em] text-navy-950 transition-colors hover:bg-gold-400 md:inline-flex"
         >
           Acceso admin
         </a>
@@ -64,22 +68,22 @@ export function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="overflow-hidden border-t border-white/10 bg-navy-950/95 backdrop-blur-md md:hidden"
+            className="overflow-hidden border-t border-gold-500/25 bg-navy-950/95 backdrop-blur-md md:hidden"
           >
             <ul className="space-y-1 px-4 py-4">
               {siteConfig.navLinks.map((link) => (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    href={getHref(link.href)}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-200 transition-colors hover:bg-white/5 hover:text-clinical-300"
+                    className="block rounded-lg px-4 py-3 text-[13px] font-medium uppercase tracking-[0.03em] text-white/70 transition-colors hover:bg-white/5 hover:text-gold-300"
                   >
                     {link.label}
                   </a>
                 </li>
               ))}
               <li>
-                <a href="/admin" onClick={() => setOpen(false)} className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-200 hover:bg-white/5">
+                <a href="/admin" onClick={() => setOpen(false)} className="block rounded-lg px-4 py-3 text-xs font-bold uppercase tracking-[0.04em] text-gold-300 hover:bg-white/5">
                   Acceso admin
                 </a>
               </li>

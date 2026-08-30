@@ -11,6 +11,12 @@ export interface ItemRow {
   cost_price: number;
   sale_price: number;
   emoji: string;
+  image_1: string;
+  image_2: string;
+  image_3: string;
+  image_4: string;
+  image_5: string;
+  featured: number;
   active: number;
   created_at: string;
   updated_at: string;
@@ -25,6 +31,12 @@ export interface ItemInput {
   cost_price?: number;
   sale_price?: number;
   emoji?: string;
+  image_1?: string;
+  image_2?: string;
+  image_3?: string;
+  image_4?: string;
+  image_5?: string;
+  featured?: number;
   active?: number;
 }
 
@@ -40,6 +52,12 @@ function toRow(row: unknown): ItemRow {
     cost_price: Number(r.cost_price ?? 0),
     sale_price: Number(r.sale_price ?? 0),
     emoji: String(r.emoji ?? '🩺'),
+    image_1: String(r.image_1 ?? ''),
+    image_2: String(r.image_2 ?? ''),
+    image_3: String(r.image_3 ?? ''),
+    image_4: String(r.image_4 ?? ''),
+    image_5: String(r.image_5 ?? ''),
+    featured: Number(r.featured ?? 0),
     active: Number(r.active ?? 1),
     created_at: String(r.created_at ?? ''),
     updated_at: String(r.updated_at ?? ''),
@@ -71,8 +89,8 @@ export function createItem(input: ItemInput): number {
   const info = db
     .prepare(
       `INSERT INTO items
-        (reference, name, category, description, unit, cost_price, sale_price, emoji, active, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (reference, name, category, description, unit, cost_price, sale_price, emoji, image_1, image_2, image_3, image_4, image_5, featured, active, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)` ,
     )
     .run(
       input.reference.trim(),
@@ -83,6 +101,9 @@ export function createItem(input: ItemInput): number {
       round2(Number(input.cost_price ?? 0)),
       round2(Number(input.sale_price ?? 0)),
       input.emoji || '🩺',
+      input.image_1?.trim() ?? '', input.image_2?.trim() ?? '', input.image_3?.trim() ?? '',
+      input.image_4?.trim() ?? '', input.image_5?.trim() ?? '',
+      input.featured ?? 0,
       input.active ?? 1,
       now,
       now,
@@ -97,7 +118,7 @@ export function updateItem(id: number, input: ItemInput): void {
   db.prepare(
     `UPDATE items SET
        reference = ?, name = ?, category = ?, description = ?, unit = ?,
-       cost_price = ?, sale_price = ?, emoji = ?, active = ?, updated_at = ?
+       cost_price = ?, sale_price = ?, emoji = ?, image_1 = ?, image_2 = ?, image_3 = ?, image_4 = ?, image_5 = ?, featured = ?, active = ?, updated_at = ?
      WHERE id = ?`,
   ).run(
     (input.reference ?? current.reference).trim(),
@@ -108,6 +129,9 @@ export function updateItem(id: number, input: ItemInput): void {
     round2(Number(input.cost_price ?? current.cost_price)),
     round2(Number(input.sale_price ?? current.sale_price)),
     input.emoji ?? current.emoji,
+    input.image_1 ?? current.image_1, input.image_2 ?? current.image_2, input.image_3 ?? current.image_3,
+    input.image_4 ?? current.image_4, input.image_5 ?? current.image_5,
+    input.featured ?? current.featured,
     input.active ?? current.active,
     new Date().toISOString(),
     id,

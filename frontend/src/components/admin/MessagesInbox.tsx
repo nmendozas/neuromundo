@@ -52,7 +52,7 @@ export function MessagesInbox() {
       ) : (
         <div className="space-y-4">
           {messages.map((msg) => (
-            <div key={msg.id} className={`rounded-2xl border p-5 ${msg.is_read ? 'border-slate-100 bg-white' : 'border-clinical-200 bg-clinical-50'}`}>
+            <div key={msg.id} className={`rounded-2xl border p-5 ${msg.is_read ? 'border-slate-100 bg-white' : 'border-gold-200 bg-gold-50'}`}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-white">
@@ -66,7 +66,7 @@ export function MessagesInbox() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {!msg.is_read && <Badge className="bg-clinical-500 text-white">Nuevo</Badge>}
+                  {!msg.is_read && <Badge className="bg-gold-500 text-white">Nuevo</Badge>}
                   <Button variant="secondary" onClick={() => toggleRead(msg)}>
                     {msg.is_read ? 'Marcar no leído' : 'Marcar leído'}
                   </Button>

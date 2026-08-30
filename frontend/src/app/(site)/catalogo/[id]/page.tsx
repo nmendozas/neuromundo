@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import ProductGallery from '@/components/sections/ProductGallery';
 import { notFound } from 'next/navigation';
 import { FALLBACK_PRODUCTS, siteConfig, whatsappLink } from '@/config/site';
 import { fetchCatalogItems } from '@/server/data';
@@ -12,6 +14,7 @@ type DetailProduct = {
   description: string;
   unit: string;
   emoji: string;
+  images: string[];
 };
 
 function normalizeItems(items: Item[]): DetailProduct[] {
@@ -24,10 +27,11 @@ function normalizeItems(items: Item[]): DetailProduct[] {
       description: item.description,
       unit: item.unit,
       emoji: item.emoji || '🩺',
+      images: [item.image_1, item.image_2, item.image_3, item.image_4, item.image_5].filter(Boolean),
     }));
   }
 
-  return FALLBACK_PRODUCTS.map((item) => ({ ...item, id: item.reference, unit: 'unidad' }));
+  return FALLBACK_PRODUCTS.map((item) => ({ ...item, id: item.reference, unit: 'unidad', images: [] }));
 }
 
 export default async function CatalogDetailPage({ params }: { params: { id: string } }) {
@@ -47,7 +51,7 @@ export default async function CatalogDetailPage({ params }: { params: { id: stri
         <div className="mx-auto max-w-6xl">
           <Link href="/catalogo" className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-300 hover:text-white">← Volver al catálogo</Link>
           <div className="mt-10 grid gap-10 lg:grid-cols-[150px_minmax(0,1fr)] lg:items-start">
-            <div className="flex h-36 w-36 items-center justify-center bg-white/5 text-7xl ring-1 ring-gold-400/40">{product.emoji}</div>
+            <ProductGallery images={product.images} emoji={product.emoji} name={product.name} variant="hero" />
             <div><p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-300">{product.category} · Ref. {product.reference}</p><h1 className="mt-5 max-w-4xl font-display text-4xl font-medium leading-tight tracking-tight sm:text-6xl">{product.name}</h1><p className="mt-6 max-w-2xl text-base leading-8 text-slate-300">Ficha informativa para equipos de compras, farmacia y atención clínica.</p></div>
           </div>
         </div>
@@ -58,7 +62,7 @@ export default async function CatalogDetailPage({ params }: { params: { id: stri
         <aside className="h-fit border border-navy-950/15 bg-navy-950 p-6 text-white lg:sticky lg:top-24"><p className="font-mono text-[10px] uppercase tracking-widest text-gold-300">¿Necesitas una cotización?</p><p className="mt-4 text-sm leading-6 text-slate-300">Solicita ficha técnica, marcas disponibles, tiempos de entrega y condiciones comerciales.</p><a href={whatsappLink(requestMessage)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex w-full justify-center bg-gold-500 px-4 py-3 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-navy-950 hover:bg-gold-300">Consultar por WhatsApp ↗</a><Link href="/catalogo" className="mt-4 block text-center text-xs text-slate-400 underline hover:text-white">Explorar más referencias</Link></aside>
       </main>
 
-      {related.length > 0 && <section className="border-t border-navy-950/10 bg-paper-50 px-4 py-14 sm:px-6 lg:px-8"><div className="mx-auto max-w-6xl"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-700">Continúa explorando</p><h2 className="mt-3 font-display text-3xl font-medium">Productos relacionados</h2><div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{related.map((item) => <Link key={item.id} href={`/catalogo/${encodeURIComponent(item.reference)}`} target="_blank" rel="noopener noreferrer" className="border border-navy-950/15 p-5 transition hover:-translate-y-1 hover:border-gold-600"><span className="text-3xl">{item.emoji}</span><p className="mt-5 font-mono text-[9px] uppercase tracking-widest text-gold-700">{item.reference}</p><h3 className="mt-2 font-display text-lg font-medium">{item.name}</h3><span className="mt-4 block text-xs text-slate-500">Ver detalle ↗</span></Link>)}</div></div></section>}
+      {related.length > 0 && <section className="border-t border-navy-950/10 bg-paper-50 px-4 py-14 sm:px-6 lg:px-8"><div className="mx-auto max-w-6xl"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-700">Continúa explorando</p><h2 className="mt-3 font-display text-3xl font-medium">Productos relacionados</h2><div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{related.map((item) => <Link key={item.id} href={`/catalogo/${encodeURIComponent(item.reference)}`} target="_blank" rel="noopener noreferrer" className="border border-navy-950/15 p-5 transition hover:-translate-y-1 hover:border-gold-600"><ProductGallery images={item.images} emoji={item.emoji} name={item.name} variant="card" /><p className="mt-5 font-mono text-[9px] uppercase tracking-widest text-gold-700">{item.reference}</p><h3 className="mt-2 font-display text-lg font-medium">{item.name}</h3><span className="mt-4 block text-xs text-slate-500">Ver detalle ↗</span></Link>)}</div></div></section>}
       <footer className="bg-navy-950 px-4 py-8 text-center text-xs text-slate-400">{siteConfig.name} · Información sujeta a confirmación comercial</footer>
     </div>
   );

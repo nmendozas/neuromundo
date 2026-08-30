@@ -47,7 +47,7 @@ export function LoginForm() {
             onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
             required
             autoFocus
-            className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-all focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100"
+            className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-all focus:border-gold-400 focus:ring-4 focus:ring-gold-100"
             placeholder="admin"
           />
         </label>
@@ -58,7 +58,7 @@ export function LoginForm() {
             value={form.password}
             onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
             required
-            className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-all focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100"
+            className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-all focus:border-gold-400 focus:ring-4 focus:ring-gold-100"
             placeholder="••••••••"
           />
         </label>

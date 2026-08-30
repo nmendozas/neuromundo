@@ -6,9 +6,11 @@ import { clientFetch } from '@/lib/client-api';
 const LINKS = [
   { href: '/admin', label: 'Dashboard', emoji: '📊' },
   { href: '/admin/items', label: 'Catálogo de ítems', emoji: '🧩' },
+  { href: '/catalogo', label: 'Ver catálogo público', emoji: '🛍️' },
   { href: '/admin/cotizaciones', label: 'Cotizaciones', emoji: '📄' },
   { href: '/admin/cotizaciones/nueva', label: 'Nueva cotización', emoji: '➕' },
   { href: '/admin/contenido', label: 'Contenido de la web', emoji: '✏️' },
+  { href: '/portafolio', label: 'Ver portafolio público', emoji: '📚' },
   { href: '/admin/parametros', label: 'Parámetros', emoji: '⚙️' },
   { href: '/admin/mensajes', label: 'Mensajes de contacto', emoji: '📬' },
 ];
@@ -28,7 +30,7 @@ export function Sidebar({ username }: { username: string }) {
       <div className="flex items-center justify-between px-5 py-5">
         <div>
           <p className="font-display text-base font-bold">
-            NeuroMundo <span className="text-clinical-300">Admin</span>
+            NeuroMundo <span className="text-gold-300">Admin</span>
           </p>
           <p className="mt-0.5 text-xs text-slate-400">{username}</p>
         </div>
@@ -51,7 +53,7 @@ export function Sidebar({ username }: { username: string }) {
               key={link.href}
               href={link.href}
               className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors ${
-                active ? 'bg-clinical-500/20 text-clinical-300' : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                active ? 'bg-gold-500/20 text-gold-300' : 'text-slate-300 hover:bg-white/5 hover:text-white'
               }`}
             >
               <span>{link.emoji}</span>

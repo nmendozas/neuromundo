@@ -9,33 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Azul profundo / marino (confianza, profesionalismo)
+        // Azul navy / marino (confianza, profesionalismo) — alineado a NeuroMundo_Portafolio_Servicios.html
         navy: {
-          50: "#F0F4FA",
-          100: "#DCE7F3",
-          200: "#B9CDE6",
-          300: "#8FACD3",
-          400: "#5F85B8",
-          500: "#3A6395",
-          600: "#284B77",
-          700: "#1C3860",
-          800: "#142B4D",
-          900: "#0C1F3B",
-          950: "#07152B",
+          50: "#EEF2F8",
+          100: "#DDE4EE",
+          200: "#B9C7DC",
+          300: "#8FA3C1",
+          400: "#6E87AC",
+          500: "#4F81BB",
+          600: "#3D6289",
+          700: "#2C3952",
+          800: "#1E2B42",
+          900: "#17223A",
+          950: "#0F1826",
         },
-        // Verde esmeralda / turquesa clínico (salud, vitalidad)
-        clinical: {
-          50: "#EFFCF7",
-          100: "#D8F6EC",
-          200: "#B0ECDA",
-          300: "#7ADCC2",
-          400: "#3DC6A4",
-          500: "#14A989",
-          600: "#0E8A71",
-          700: "#0F6E5C",
-          800: "#10574B",
-          900: "#11483E",
-          950: "#072E27",
+        // Dorado elegante (referencial premium) — alineado a NeuroMundo_Portafolio_Servicios.html
+        gold: {
+          50: "#F9F4E8",
+          100: "#F3E9D3",
+          200: "#E9D8AE",
+          300: "#E3CB94",
+          400: "#D5B374",
+          500: "#C9A15C",
+          600: "#B08A44",
+          700: "#8F6F35",
+          800: "#6E5529",
+          900: "#4E3A1C",
+          950: "#2E2310",
+        },
+        // Fondo papel crema del portafolio
+        paper: {
+          50: "#FBF9F5",
+          100: "#F8F6F1",
+          200: "#EFECE3",
+          300: "#E3DFD3",
         },
       },
       fontFamily: {

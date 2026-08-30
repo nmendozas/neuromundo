@@ -18,7 +18,7 @@ export function Button({
 }
 
 const fieldClass =
-  'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-navy-900 placeholder:text-slate-400 outline-none transition-all focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100';
+  'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-navy-900 placeholder:text-slate-400 outline-none transition-all focus:border-gold-400 focus:ring-4 focus:ring-gold-100';
 
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${fieldClass} ${props.className ?? ''}`} />;
@@ -66,7 +66,7 @@ export function Badge({ children, className = '' }: { children: ReactNode; class
 export function Spinner() {
   return (
     <div className="flex items-center justify-center py-16 text-slate-400">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-clinical-500" />
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-gold-500" />
     </div>
   );
 }

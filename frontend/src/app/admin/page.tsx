@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
         {!stats || stats.recentQuotes.length === 0 ? (
           <p className="py-8 text-center text-sm text-slate-400">
             Aún no hay cotizaciones.{' '}
-            <Link href="/admin/cotizaciones/nueva" className="font-semibold text-clinical-600 hover:underline">
+            <Link href="/admin/cotizaciones/nueva" className="font-semibold text-gold-600 hover:underline">
               Crear la primera →
             </Link>
           </p>
@@ -69,7 +69,7 @@ export default async function AdminDashboard() {
                 {stats.recentQuotes.map((quote) => (
                   <tr key={quote.id} className="border-b border-slate-100">
                     <td className="py-2.5 pr-4">
-                      <Link href={`/admin/cotizaciones/${quote.id}`} className="font-mono text-xs font-semibold text-navy-900 hover:text-clinical-600">
+                      <Link href={`/admin/cotizaciones/${quote.id}`} className="font-mono text-xs font-semibold text-navy-900 hover:text-gold-600">
                         {quote.number}
                       </Link>
                     </td>

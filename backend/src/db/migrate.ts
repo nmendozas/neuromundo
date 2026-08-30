@@ -25,6 +25,9 @@ export const DEFAULT_CONTENT: Record<string, string> = {
   contact_title: 'Un mundo de soluciones para tu IPS',
   contact_text:
     'Cuéntanos qué línea de servicio necesitas — suministro, facturación, radicación, capacitación o asesoría — y diseñamos una propuesta a la medida de tu institución.',
+  portfolio_title: 'Portafolio de Servicios',
+  portfolio_subtitle:
+    'Suministro médico especializado, tercerización de facturación y radicación ante ADRES, SOAT, ARL y EPS, y asesoría integral para instituciones de salud en Colombia.',
 };
 
 /** Parámetros por defecto (empresa + cotización). */
@@ -89,6 +92,12 @@ export function runMigrations(db: Database.Database): void {
       cost_price REAL NOT NULL DEFAULT 0,
       sale_price REAL NOT NULL DEFAULT 0,
       emoji TEXT NOT NULL DEFAULT '🩺',
+      image_1 TEXT NOT NULL DEFAULT '',
+      image_2 TEXT NOT NULL DEFAULT '',
+      image_3 TEXT NOT NULL DEFAULT '',
+      image_4 TEXT NOT NULL DEFAULT '',
+      image_5 TEXT NOT NULL DEFAULT '',
+      featured INTEGER NOT NULL DEFAULT 0,
       active INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -141,6 +150,20 @@ export function runMigrations(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_items_active ON items(active);
     CREATE INDEX IF NOT EXISTS idx_quotes_status ON quotes(status);
   `);
+
+  // Compatibilidad con bases de datos creadas antes de la galería de imágenes.
+  for (const column of ['image_1', 'image_2', 'image_3', 'image_4', 'image_5']) {
+    try {
+      db.exec(`ALTER TABLE items ADD COLUMN ${column} TEXT NOT NULL DEFAULT ''`);
+    } catch {
+      // La columna ya existe; no hay nada que migrar.
+    }
+  }
+  try {
+    db.exec('ALTER TABLE items ADD COLUMN featured INTEGER NOT NULL DEFAULT 0');
+  } catch {
+    // La columna ya existe; no hay nada que migrar.
+  }
 
   // ─── Seed: usuario administrador inicial ───
   const admin = db

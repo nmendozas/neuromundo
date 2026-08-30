@@ -8,7 +8,7 @@ import { clientFetch } from '@/lib/client-api';
 import { MailIcon, PhoneIcon, SendIcon, WhatsAppIcon } from '@/components/icons';
 
 const inputClass =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-navy-900 placeholder:text-slate-400 outline-none transition-all focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100';
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-navy-900 placeholder:text-slate-400 outline-none transition-all focus:border-gold-400 focus:ring-4 focus:ring-gold-100';
 
 interface ContactProps {
   content: Record<string, string>;
@@ -76,14 +76,14 @@ export function Contact({ content, parameters }: ContactProps) {
           backgroundSize: '72px 72px',
         }}
       />
-      <div className="pointer-events-none absolute -right-24 top-0 h-[360px] w-[360px] rounded-full bg-clinical-500/15 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 top-0 h-[360px] w-[360px] rounded-full bg-gold-500/15 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <Reveal>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-clinical-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-clinical-400" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
                 Hablemos
               </span>
               <h2 className="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl">
@@ -97,19 +97,19 @@ export function Contact({ content, parameters }: ContactProps) {
             <Reveal delay={0.1}>
               <div className="mt-10 space-y-4">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-clinical-300">{siteConfig.manager.role}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gold-300">{siteConfig.manager.role}</p>
                   <p className="mt-1 font-display text-lg font-bold text-white">{siteConfig.manager.name}</p>
                   <div className="mt-4 space-y-2.5 text-sm">
-                    <a href={`mailto:${managerEmail}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-clinical-300">
-                      <MailIcon className="h-4 w-4 shrink-0 text-clinical-400" />
+                    <a href={`mailto:${managerEmail}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
+                      <MailIcon className="h-4 w-4 shrink-0 text-gold-400" />
                       {managerEmail}
                     </a>
-                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-300 transition-colors hover:text-clinical-300">
-                      <WhatsAppIcon className="h-4 w-4 shrink-0 text-clinical-400" />
+                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
+                      <WhatsAppIcon className="h-4 w-4 shrink-0 text-gold-400" />
                       WhatsApp: {siteConfig.whatsappDisplay}
                     </a>
-                    <a href={`tel:+${siteConfig.phone}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-clinical-300">
-                      <PhoneIcon className="h-4 w-4 shrink-0 text-clinical-400" />
+                    <a href={`tel:+${siteConfig.phone}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
+                      <PhoneIcon className="h-4 w-4 shrink-0 text-gold-400" />
                       Celular: {phoneDisplay}
                     </a>
                   </div>
@@ -171,7 +171,7 @@ export function Contact({ content, parameters }: ContactProps) {
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={sending}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-clinical-500 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-clinical-500/25 transition-colors hover:bg-clinical-600 disabled:opacity-70"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-500 px-7 py-3.5 text-sm font-semibold text-navy-100 shadow-lg shadow-gold-500/25 transition-colors hover:bg-gold-600 disabled:opacity-70"
               >
                 <SendIcon className="h-4 w-4" />
                 {sending ? 'Enviando…' : 'Enviar solicitud'}

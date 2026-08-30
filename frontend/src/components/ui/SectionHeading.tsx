@@ -13,11 +13,11 @@ export function SectionHeading({ eyebrow, title, description, dark = false }: Se
       <span
         className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] ${
           dark
-            ? 'border-white/20 bg-white/5 text-clinical-300'
-            : 'border-clinical-200 bg-clinical-50 text-clinical-600'
+            ? 'border-white/20 bg-white/5 text-gold-300'
+            : 'border-gold-200 bg-gold-50 text-gold-600'
         }`}
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-clinical-400" />
+        <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
         {eyebrow}
       </span>
       <h2

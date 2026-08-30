@@ -1,11 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { DEFAULT_WHATSAPP_MESSAGE, whatsappLink } from '@/config/site';
 import { WhatsAppIcon } from '@/components/icons';
 
 /** Botón flotante de WhatsApp (pulso sutil + hover). */
 export function WhatsAppFloat() {
+  const [mounted, setMounted] = useState(false);
+
+  // Evita que el árbol inicial de Framer Motion difiera entre SSR y cliente.
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
   return (
     <motion.a
       href={whatsappLink(DEFAULT_WHATSAPP_MESSAGE)}

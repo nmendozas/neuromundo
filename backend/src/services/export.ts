@@ -4,8 +4,8 @@ import { createPdfBuffer } from '../lib/pdf';
 import type { QuoteRow, QuoteItemRow } from '../db/repos/quotes';
 import type { ItemRow } from '../db/repos/items';
 
-const NAVY = '#0C1F3B';
-const CLINICAL = '#0E8A71';
+const NAVY = '#17223A';
+const GOLD = '#C9A15C';
 
 /** Genera el PDF de una cotización (pdfmake, letter, tabla y totales). */
 export function buildQuotePdf(
@@ -51,7 +51,7 @@ export function buildQuotePdf(
             stack: [
               { text: company['company.name'] ?? 'NeuroMundo S.A.S', fontSize: 20, bold: true, color: NAVY },
               company['company.slogan']
-                ? { text: company['company.slogan'], fontSize: 10, color: CLINICAL, margin: [0, 2, 0, 6] }
+                ? { text: company['company.slogan'], fontSize: 10, color: GOLD, margin: [0, 2, 0, 6] }
                 : {},
               company['company.nit']
                 ? { text: `NIT: ${company['company.nit']}`, fontSize: 9, color: '#555555' }
@@ -70,7 +70,7 @@ export function buildQuotePdf(
               { text: `COTIZACIÓN ${quote.number}`, fontSize: 16, bold: true, alignment: 'right', color: NAVY },
               { text: `Fecha: ${formatDate(quote.created_at)}`, alignment: 'right', fontSize: 9, margin: [0, 6, 0, 0] },
               { text: `Válida por: ${quote.valid_days} días`, alignment: 'right', fontSize: 9 },
-              { text: `Estado: ${quote.status}`, alignment: 'right', fontSize: 9, color: CLINICAL },
+              { text: `Estado: ${quote.status}`, alignment: 'right', fontSize: 9, color: GOLD },
             ],
           },
         ],
@@ -145,7 +145,7 @@ export function buildQuotePdf(
                 [{ text: `IVA (${ivaLabel})`, fontSize: 9 }, { text: formatCOP(quote.iva), fontSize: 9, alignment: 'right' }],
                 [
                   { text: 'TOTAL', fontSize: 12, bold: true, color: NAVY },
-                  { text: `${formatCOP(quote.total)} ${quote.currency}`, fontSize: 12, bold: true, color: CLINICAL, alignment: 'right' },
+                  { text: `${formatCOP(quote.total)} ${quote.currency}`, fontSize: 12, bold: true, color: GOLD, alignment: 'right' },
                 ],
               ],
             },
@@ -319,10 +319,10 @@ export async function buildItemsTemplate(): Promise<Buffer> {
     { width: 10 },
     { width: 14 },
     { width: 14 },
-    { width: 8 },
+    { width: 8 }, { width: 32 }, { width: 32 }, { width: 32 }, { width: 32 }, { width: 32 },
   ];
 
-  const headers = ['Referencia', 'Nombre', 'Categoría', 'Descripción', 'Unidad', 'Costo', 'Venta', 'Emoji'];
+  const headers = ['Referencia', 'Nombre', 'Categoría', 'Descripción', 'Unidad', 'Costo', 'Venta', 'Emoji', 'Imagen 1 (principal)', 'Imagen 2', 'Imagen 3', 'Imagen 4', 'Imagen 5'];
   headers.forEach((h, i) => {
     const cell = ws.getCell(1, i + 1);
     cell.value = h;
@@ -331,8 +331,8 @@ export async function buildItemsTemplate(): Promise<Buffer> {
   });
 
   const example = [
-    ['MAOS-9001', 'Placa de osteosíntesis 3.5 mm', 'Ortopedia', 'Placa de titanio para fijación de fracturas', 'unidad', 320000, 450000, '🦴'],
-    ['UCI-9002', 'Circuito de ventilación adulto', 'UCI', 'Circuito respiratorio con filtro HME', 'unidad', 24000, 38000, '🫁'],
+    ['MAOS-9001', 'Placa de osteosíntesis 3.5 mm', 'Ortopedia', 'Placa de titanio para fijación de fracturas', 'unidad', 320000, 450000, '🦴', '', '', '', '', ''],
+    ['UCI-9002', 'Circuito de ventilación adulto', 'UCI', 'Circuito respiratorio con filtro HME', 'unidad', 24000, 38000, '🫁', '', '', '', '', ''],
   ];
   example.forEach((row, i) => {
     const r = 2 + i;

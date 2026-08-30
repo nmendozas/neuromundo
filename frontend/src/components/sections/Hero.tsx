@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { siteConfig, whatsappLink } from '@/config/site';
 import { EASE } from '@/components/ui/Reveal';
 import { WhatsAppIcon } from '@/components/icons';
@@ -33,16 +34,17 @@ export function Hero({ content }: { content: Record<string, string> }) {
           backgroundSize: '72px 72px',
         }}
       />
-      <div className="pointer-events-none absolute -top-32 right-[-10%] h-[420px] w-[420px] rounded-full bg-clinical-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 right-[-10%] h-[420px] w-[420px] rounded-full bg-gold-500/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-[-20%] left-[-10%] h-[380px] w-[380px] rounded-full bg-navy-600/40 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-36 sm:px-6 sm:pt-44 lg:px-8">
-        <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)] lg:gap-16">
+          <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl">
           <motion.div variants={item}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-clinical-400/30 bg-clinical-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-clinical-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/30 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-clinical-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-clinical-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-gold-400" />
               </span>
               {content.hero_eyebrow ?? siteConfig.slogan}
             </span>
@@ -64,7 +66,7 @@ export function Hero({ content }: { content: Record<string, string> }) {
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#servicios"
-              className="inline-flex items-center gap-2 rounded-full bg-clinical-500 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-clinical-500/25 transition-all hover:-translate-y-0.5 hover:bg-clinical-400"
+              className="inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3.5 text-sm font-semibold text-navy-100 shadow-xl shadow-gold-500/25 transition-all hover:-translate-y-0.5 hover:bg-gold-400"
             >
               Ver Servicios
             </a>
@@ -78,13 +80,25 @@ export function Hero({ content }: { content: Record<string, string> }) {
               href={whatsappLink('Hola NeuroMundo S.A.S 👋 Quisiera información sobre sus insumos y servicios.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-3.5 text-sm font-medium text-clinical-300 transition-colors hover:text-clinical-200"
+              className="inline-flex items-center gap-2 px-4 py-3.5 text-sm font-medium text-gold-300 transition-colors hover:text-gold-200"
             >
               <WhatsAppIcon className="h-5 w-5" />
               Cotización rápida
             </a>
           </motion.div>
-        </motion.div>
+          </motion.div>
+
+          <motion.div variants={item} initial="hidden" animate="show" className="flex justify-center lg:justify-end">
+            <Image
+              src="/logo.png"
+              alt="Logotipo de NeuroMundo S.A.S"
+              width={357}
+              height={204}
+              className="h-auto w-56 object-contain sm:w-72 lg:w-full lg:max-w-[360px]"
+              priority
+            />
+          </motion.div>
+        </div>
 
         <motion.dl
           variants={container}
@@ -95,7 +109,7 @@ export function Hero({ content }: { content: Record<string, string> }) {
           {siteConfig.stats.map((stat) => (
             <motion.div key={stat.label} variants={item} className="flex flex-col gap-1 bg-navy-950/80 px-6 py-6 backdrop-blur-sm">
               <dt className="order-2 text-xs font-medium uppercase tracking-wider text-slate-400">{stat.label}</dt>
-              <dd className="order-1 font-display text-3xl font-bold text-clinical-300 sm:text-4xl">{stat.value}</dd>
+              <dd className="order-1 font-display text-3xl font-bold text-gold-300 sm:text-4xl">{stat.value}</dd>
             </motion.div>
           ))}
         </motion.dl>

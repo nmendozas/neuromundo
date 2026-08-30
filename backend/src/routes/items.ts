@@ -29,6 +29,12 @@ const itemSchema = z.object({
   cost_price: z.coerce.number().nonnegative().optional().default(0),
   sale_price: z.coerce.number().nonnegative().optional().default(0),
   emoji: z.string().optional().default('🩺'),
+  image_1: z.string().url().or(z.literal('')).optional().default(''),
+  image_2: z.string().url().or(z.literal('')).optional().default(''),
+  image_3: z.string().url().or(z.literal('')).optional().default(''),
+  image_4: z.string().url().or(z.literal('')).optional().default(''),
+  image_5: z.string().url().or(z.literal('')).optional().default(''),
+  featured: z.coerce.number().int().min(0).max(1).optional().default(0),
   active: z.coerce.number().int().min(0).max(1).optional().default(1),
 });
 
@@ -82,6 +88,10 @@ itemsRouter.post('/import', requireAuth, upload.single('file'), (req, res) => {
 
 // POST /api/items → crear
 itemsRouter.post('/', requireAuth, validate(itemSchema), (req, res) => {
+  if (req.body.featured === 1 && listItems().filter((item) => item.featured).length >= 12) {
+    res.status(409).json({ error: 'Solo puedes marcar hasta 12 artículos como destacados' });
+    return;
+  }
   const dup = findItemByReference(req.body.reference.trim());
   if (dup) {
     res.status(409).json({ error: `Ya existe un ítem con la referencia "${dup.reference}"` });
@@ -115,6 +125,10 @@ itemsRouter.put('/:id', requireAuth, validate(itemSchema.partial()), (req, res) 
       res.status(409).json({ error: 'Esa referencia ya está en uso por otro ítem' });
       return;
     }
+  }
+  if (req.body.featured === 1 && !existing.featured && listItems().filter((item) => item.featured).length >= 12) {
+    res.status(409).json({ error: 'Solo puedes marcar hasta 12 artículos como destacados' });
+    return;
   }
   updateItem(id, req.body);
   res.json(findItemById(id));

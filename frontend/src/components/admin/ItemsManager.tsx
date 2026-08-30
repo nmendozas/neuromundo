@@ -14,6 +14,8 @@ const EMPTY_FORM = {
   cost_price: '0',
   sale_price: '0',
   emoji: '🩺',
+  image_1: '', image_2: '', image_3: '', image_4: '', image_5: '',
+  featured: 0,
   active: 1,
 };
 
@@ -71,6 +73,8 @@ export function ItemsManager() {
       cost_price: String(item.cost_price),
       sale_price: String(item.sale_price),
       emoji: item.emoji,
+      image_1: item.image_1, image_2: item.image_2, image_3: item.image_3, image_4: item.image_4, image_5: item.image_5,
+      featured: item.featured,
       active: item.active,
     });
     setFormOpen(true);
@@ -89,6 +93,8 @@ export function ItemsManager() {
       cost_price: Number(form.cost_price),
       sale_price: Number(form.sale_price),
       emoji: form.emoji || '🩺',
+      image_1: form.image_1.trim(), image_2: form.image_2.trim(), image_3: form.image_3.trim(), image_4: form.image_4.trim(), image_5: form.image_5.trim(),
+      featured: Number(form.featured),
       active: Number(form.active),
     };
     try {
@@ -218,6 +224,7 @@ export function ItemsManager() {
                   <th className="py-3 pr-4 text-right">Costo</th>
                   <th className="py-3 pr-4 text-right">Venta</th>
                   <th className="py-3 pr-4">Estado</th>
+                  <th className="py-3 pr-4">Inicio</th>
                   <th className="py-3 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -235,13 +242,14 @@ export function ItemsManager() {
                     </td>
                     <td className="py-3 pr-4 font-mono text-xs">{item.reference}</td>
                     <td className="py-3 pr-4">
-                      <Badge className="bg-clinical-50 text-clinical-700">{item.category}</Badge>
+                      <Badge className="bg-gold-50 text-gold-700">{item.category}</Badge>
                     </td>
                     <td className="py-3 pr-4 text-right">{item.cost_price.toLocaleString('es-CO')}</td>
                     <td className="py-3 pr-4 text-right font-semibold text-navy-900">{item.sale_price.toLocaleString('es-CO')}</td>
                     <td className="py-3 pr-4">
                       {item.active ? <Badge className="bg-emerald-100 text-emerald-700">Activo</Badge> : <Badge className="bg-slate-100 text-slate-500">Inactivo</Badge>}
                     </td>
+                    <td className="py-3 pr-4">{item.featured ? <Badge className="bg-gold-100 text-gold-700">Destacado</Badge> : <span className="text-slate-400">—</span>}</td>
                     <td className="py-3 text-right">
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" onClick={() => openEdit(item)}>Editar</Button>
@@ -252,7 +260,7 @@ export function ItemsManager() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-10 text-center text-sm text-slate-400">
+                    <td colSpan={8} className="py-10 text-center text-sm text-slate-400">
                       No hay ítems. Crea uno o importa una hoja de cálculo.
                     </td>
                   </tr>
@@ -287,11 +295,21 @@ export function ItemsManager() {
             <Field label="Emoji">
               <Input value={form.emoji} onChange={(e) => setForm((f) => ({ ...f, emoji: e.target.value }))} placeholder="🦴" />
             </Field>
+            {[1, 2, 3, 4, 5].map((number) => <Field key={number} label={`Imagen ${number}${number === 1 ? ' (principal)' : ''}`}>
+              <Input type="url" value={form[`image_${number}` as keyof typeof form]} onChange={(e) => setForm((f) => ({ ...f, [`image_${number}`]: e.target.value }))} placeholder="https://…" />
+            </Field>)}
+            <Field label="Mostrar en inicio">
+              <select value={form.featured} onChange={(e) => setForm((f) => ({ ...f, featured: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-100">
+                <option value={0}>No</option>
+                <option value={1}>Sí, destacado</option>
+              </select>
+              <p className="mt-1 text-xs text-slate-400">Máximo 12 productos destacados.</p>
+            </Field>
             <Field label="Estado">
               <select
                 value={form.active}
                 onChange={(e) => setForm((f) => ({ ...f, active: Number(e.target.value) }))}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-clinical-400 focus:ring-4 focus:ring-clinical-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-100"
               >
                 <option value={1}>Activo</option>
                 <option value={0}>Inactivo</option>
