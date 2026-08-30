@@ -1,4 +1,4 @@
-# ================================================
+﻿# ================================================
 # NeuroMundo S.A.S - Arranque local visible
 # Abre cada servicio en su propia ventana de cmd.
 # ================================================
@@ -36,11 +36,16 @@ function Test-Port([int]$p) {
   $null -ne (Get-NetTCPConnection -LocalPort $p -State Listen -EA SilentlyContinue)
 }
 
-# ---------- Helper: abrir ventana cmd visible ----------
-function Open-ServiceWindow([string]$Title, [string]$Cmd, [string]$Dir) {
-  $escaped = $Cmd.Replace('"', '\"')
-  $args_   = "/k title $Title && $escaped"
-  $p = Start-Process cmd.exe -ArgumentList $args_ -WorkingDirectory $Dir -PassThru
+# ---------- Helper: lanza servicio en ventana visible via .bat temporal ----------
+function Open-ServiceWindow([string]$Title, [string]$Command, [string]$WorkDir) {
+  $safeName = $Title -replace '[^a-zA-Z0-9]', '_'
+  $bat = Join-Path $runDir "$safeName.bat"
+  $batContent = "@echo off`r`ntitle $Title`r`n$Command`r`npause"
+  [System.IO.File]::WriteAllText($bat, $batContent, [System.Text.Encoding]::ASCII)
+  $p = Start-Process -FilePath 'cmd.exe' `
+       -ArgumentList "/k `"$bat`"" `
+       -WorkingDirectory $WorkDir `
+       -PassThru
   return $p.Id
 }
 
@@ -48,7 +53,7 @@ function Open-ServiceWindow([string]$Title, [string]$Cmd, [string]$Dir) {
 if (Test-Port 4000) {
   Write-Host '  API ya en :4000 (omitida).' -ForegroundColor Yellow
 } else {
-  $cmd = "`"$nodeExe`" dist/index.js"
+  $cmd  = "`"$nodeExe`" dist/index.js"
   $pid_ = Open-ServiceWindow 'NeuroMundo - API :4000' $cmd $backendDir
   $pid_ | Set-Content (Join-Path $runDir 'api.pid')
   Write-Host "  API iniciada PID $pid_  ->  http://localhost:4000" -ForegroundColor Green
@@ -58,13 +63,15 @@ if (Test-Port 4000) {
 if (Test-Port 3000) {
   Write-Host '  Web ya en :3000 (omitida).' -ForegroundColor Yellow
 } else {
-  $env:API_URL                      = 'http://localhost:4000'
-  $env:NEXT_PUBLIC_WHATSAPP_NUMBER  = '573052743878'
-  $env:NEXT_TELEMETRY_DISABLED      = '1'
+  $env:API_URL                     = 'http://localhost:4000'
+  $env:NEXT_PUBLIC_WHATSAPP_NUMBER = '573052743878'
+  $env:NEXT_TELEMETRY_DISABLED     = '1'
 
   $nextJs  = Join-Path $frontendDir 'node_modules\next\dist\bin\next.js'
   $nextBin = Join-Path $frontendDir 'node_modules\next\dist\bin\next'
-  $loader  = if (Test-Path $nextJs) { $nextJs } elseif (Test-Path $nextBin) { $nextBin } else { '' }
+  $loader  = if (Test-Path $nextJs) { $nextJs } `
+             elseif (Test-Path $nextBin) { $nextBin } `
+             else { $null }
   if (-not $loader) {
     Write-Host '[ERROR] No se encontro next.js. Ejecuta npm install en frontend/.' -ForegroundColor Red
     pause; exit 1
