@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════
-# NeuroMundo S.A.S - Arranque local en segundo plano (oculto)
+# NeuroMundo S.A.S - Arranque local en ventanas visibles
 # Usado por iniciar-local.bat . No ejecutar a mano.
 # Resuelve 'node' por ruta absoluta (compatible con nvm4w).
 # ═══════════════════════════════════════════════════════════
@@ -32,7 +32,7 @@ if (-not $nodeExe) {
   exit 1
 }
 $nodeExe = (Resolve-Path $nodeExe).Path
-Write-Host "  · Node: $nodeExe"
+Write-Host "  . Node: $nodeExe"
 
 # --- Ejecutable real de Next (evita el wrapper de npx) ---
 $nextBin = Join-Path $frontendDir 'node_modules\next\dist\bin\next'
@@ -42,35 +42,37 @@ function Test-Port([int]$Port) {
   return [bool](Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue)
 }
 
-function Start-NodeHidden([string[]]$ArgList, [string]$WorkingDir, [string]$Log, [string]$ErrLog) {
-  $p = Start-Process -FilePath $nodeExe -ArgumentList $ArgList `
-    -WorkingDirectory $WorkingDir -WindowStyle Hidden `
-    -RedirectStandardOutput $Log -RedirectStandardError $ErrLog -PassThru
+# Abre una ventana cmd VISIBLE con titulo; /k mantiene la ventana abierta
+function Start-NodeVisible([string]$Title, [string[]]$ArgList, [string]$WorkingDir) {
+  $argStr  = ($ArgList | ForEach-Object { "`"$_`"" }) -join ' '
+  $cmdArgs = "/k title $Title && `"$nodeExe`" $argStr"
+  $p = Start-Process -FilePath 'cmd.exe' `
+    -ArgumentList $cmdArgs `
+    -WorkingDirectory $WorkingDir `
+    -PassThru
   return $p.Id
 }
 
-# ─── Backend (API Express, puerto 4000) ───
+# --- Backend (API Express, puerto 4000) ---
 if (Test-Port 4000) {
-  Write-Host '  · API ya estaba corriendo en el puerto 4000 (se omite).'
+  Write-Host '  . API ya estaba corriendo en el puerto 4000 (se omite).'
 } else {
-  $apiPid = Start-NodeHidden @('dist/index.js') $backendDir `
-    (Join-Path $runDir 'api.log') (Join-Path $runDir 'api.err.log')
+  $apiPid = Start-NodeVisible 'NeuroMundo - API :4000' @('dist/index.js') $backendDir
   Set-Content -Path (Join-Path $runDir 'api.pid') -Value $apiPid
-  Write-Host "  · API iniciada (PID $apiPid) -> http://localhost:4000"
+  Write-Host "  . API iniciada (PID $apiPid) -> http://localhost:4000"
 }
 
-# ─── Frontend (Next.js, puerto 3000) ───
+# --- Frontend (Next.js, puerto 3000) ---
 if (Test-Port 3000) {
-  Write-Host '  · Web ya estaba corriendo en el puerto 3000 (se omite).'
+  Write-Host '  . Web ya estaba corriendo en el puerto 3000 (se omite).'
 } else {
-  # Variables que heredan los procesos hijos
+  # Variables de entorno que heredan los procesos hijos
   $env:API_URL = 'http://localhost:4000'
   $env:NEXT_PUBLIC_WHATSAPP_NUMBER = '573052743878'
   $env:NEXT_TELEMETRY_DISABLED = '1'
-  # Usa el .js si existe (version sin extension .cmd), sino el binario
+  # Usa next.js si existe, sino el binario sin extension, sino fallback
   $loader = if (Test-Path $nextJs) { $nextJs } elseif (Test-Path $nextBin) { $nextBin } else { 'node_modules\next\dev' }
-  $webPid = Start-NodeHidden @($loader, 'dev', '-p', '3000') $frontendDir `
-    (Join-Path $runDir 'web.log') (Join-Path $runDir 'web.err.log')
+  $webPid = Start-NodeVisible 'NeuroMundo - Web :3000' @($loader, 'dev', '-p', '3000') $frontendDir
   Set-Content -Path (Join-Path $runDir 'web.pid') -Value $webPid
-  Write-Host "  · Web iniciada (PID $webPid) -> http://localhost:3000"
+  Write-Host "  . Web iniciada (PID $webPid) -> http://localhost:3000"
 }
