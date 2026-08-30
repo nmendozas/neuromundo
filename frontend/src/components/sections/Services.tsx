@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { services } from '@/config/site';
 import { ServiceIcon, ArrowRightIcon } from '@/components/icons';
 import { Reveal } from '@/components/ui/Reveal';
@@ -32,15 +33,16 @@ export function Services() {
                   <ServiceIcon service={service} className="h-6 w-6" />
                 </div>
 
+                <Link href={`/servicios/${encodeURIComponent(service.id)}`} className="absolute inset-0 z-10" aria-label={`Ver detalles de ${service.title}`} />
                 <h3 className="relative mt-6 font-display text-lg font-bold leading-snug text-navy-900">{service.title}</h3>
                 <p className="relative mt-3 flex-1 text-sm leading-relaxed text-slate-600">{service.description}</p>
 
                 <div className="relative mt-6 flex items-center justify-between">
                   <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-medium text-slate-500">{service.category}</span>
-                  <a href="#contacto" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-700 transition-colors group-hover:text-gold-600">
-                    Cotizar
+                  <Link href={`/servicios/${encodeURIComponent(service.id)}`} className="relative z-20 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-700 transition-colors group-hover:text-gold-600">
+                    Ver servicio
                     <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
+                  </Link>
                 </div>
               </motion.article>
             </Reveal>

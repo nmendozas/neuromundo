@@ -120,7 +120,7 @@ export function ContentEditor() {
       ))}
 
       <Card title="Portafolio público">
-        <p className="mb-4 text-sm text-slate-500">Edita los servicios que aparecen en la vista pública <strong>/portafolio</strong>. Puedes modificar títulos, categorías, descripción y detalles.</p>
+        <p className="mb-4 text-sm text-slate-500">Edita las tarjetas y la vista personalizada de cada servicio. La URL se genera con el identificador del servicio.</p>
         <Field label="Título de la vista"><Input value={content.portfolio_title ?? ''} onChange={(e) => set('portfolio_title', e.target.value)} /></Field>
         <Field label="Subtítulo de la vista" className="mt-4"><Textarea rows={3} value={content.portfolio_subtitle ?? ''} onChange={(e) => set('portfolio_subtitle', e.target.value)} /></Field>
         <div className="mt-6 space-y-5">
@@ -135,6 +135,9 @@ export function ContentEditor() {
                   <Input aria-label="Categoría" value={service.category} onChange={(e) => { const next = [...services]; next[index] = { ...service, category: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
                   <Textarea aria-label="Descripción" rows={2} className="sm:col-span-2" value={service.description} onChange={(e) => { const next = [...services]; next[index] = { ...service, description: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
                   <Textarea aria-label="Detalles (uno por línea)" rows={4} className="sm:col-span-2" value={service.details.join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, details: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Textarea aria-label="Descripción completa" placeholder="Descripción que aparecerá en el detalle" rows={3} className="sm:col-span-2" value={service.longDescription ?? ''} onChange={(e) => { const next = [...services]; next[index] = { ...service, longDescription: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Textarea aria-label="Beneficios (uno por línea)" placeholder="Beneficios de la solución, uno por línea" rows={3} className="sm:col-span-2" value={(service.benefits ?? []).join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, benefits: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
+                  <Textarea aria-label="Proceso (uno por línea)" placeholder="Pasos del proceso, uno por línea" rows={3} className="sm:col-span-2" value={(service.process ?? []).join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, process: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
                 </div>
               </div>
             ));

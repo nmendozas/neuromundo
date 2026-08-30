@@ -19,11 +19,12 @@ export const siteConfig = {
   country: 'Colombia',
   manager: { name: 'Ramiro José Conde Hernández', role: 'Gerente · Abogado' },
   navLinks: [
+    { href: '/', label: 'Inicio' },
     { href: '/portafolio', label: 'Portafolio' },
     { href: '#servicios', label: 'Servicios' },
     { href: '/catalogo', label: 'Catálogo' },
     { href: '/nosotros', label: 'Nosotros' },
-    { href: '#contacto', label: 'Contacto' },
+    { href: '/contacto', label: 'Contacto' },
   ],
   stats: [
     { value: '9', label: 'Líneas de servicio' },
@@ -67,6 +68,10 @@ export interface PortfolioService {
   category: string;
   description: string;
   details: string[];
+  longDescription?: string;
+  benefits?: string[];
+  process?: string[];
+  ctaLabel?: string;
 }
 
 /** Contenido editable de la vista pública /portafolio. */
