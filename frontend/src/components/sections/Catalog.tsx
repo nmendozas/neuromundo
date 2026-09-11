@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FALLBACK_PRODUCTS, whatsappLink } from '@/config/site';
+import { siteConfig } from '@/config/site';
 import type { Item } from '@/types';
 import { Reveal } from '@/components/ui/Reveal';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -25,7 +25,6 @@ interface CatalogProduct {
 }
 
 function toProducts(items: Item[]): CatalogProduct[] {
-  if (!items.length) return FALLBACK_PRODUCTS;
   return items.map((item) => ({
     reference: item.reference,
     name: item.name,
@@ -40,14 +39,15 @@ function toProducts(items: Item[]): CatalogProduct[] {
 }
 
 /** Catálogo informativo: cada producto cotiza por WhatsApp. */
-export function Catalog({ items }: { items: Item[] }) {
-  const products: CatalogProduct[] = items.length
-    ? toProducts(items).filter((product) => product.featured).slice(0, 5)
-    : FALLBACK_PRODUCTS.slice(0, 5).map((product) => ({ ...product }));
+export function Catalog({ items, parameters }: { items: Item[]; parameters: Record<string, string> }) {
+  const products = toProducts(items).filter((product) => product.featured).slice(0, 5);
   const [selected, setSelected] = useState<CatalogProduct | null>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const companyName = parameters['company.name'] ?? siteConfig.name;
+  const whatsappNumber = parameters['company.whatsapp'] ?? siteConfig.whatsappNumber;
+  const whatsappLink = (message: string) => `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!selected) return;
@@ -97,7 +97,7 @@ export function Catalog({ items }: { items: Item[] }) {
 
                   <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-white/10 pt-5"><button type="button" onClick={() => { setSelected(product); setStatus(null); }} className="inline-flex items-center gap-2 bg-gold-500 px-4 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-navy-950 transition hover:bg-gold-300">Solicitar información <span aria-hidden="true">↗</span></button><a
                     href={whatsappLink(
-                      `Hola NeuroMundo S.A.S 👋 Estoy interesado en cotizar: ${product.name} (Ref. ${product.reference}).`,
+                      `Hola ${companyName} 👋 Estoy interesado en cotizar: ${product.name} (Ref. ${product.reference}).`,
                     )}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -116,7 +116,7 @@ export function Catalog({ items }: { items: Item[] }) {
           <p className="mt-10 text-center text-sm text-slate-400">
             ⚕️ Solicita el portafolio completo de referencias por{' '}
             <a
-              href={whatsappLink('Hola NeuroMundo S.A.S 👋 ¿Podrían enviarme el portafolio completo de insumos?')}
+              href={whatsappLink(`Hola ${companyName} 👋 ¿Podrían enviarme el portafolio completo de insumos?`)}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-gold-600 underline-offset-4 hover:underline"

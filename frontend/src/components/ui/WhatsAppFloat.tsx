@@ -6,7 +6,7 @@ import { DEFAULT_WHATSAPP_MESSAGE, whatsappLink } from '@/config/site';
 import { WhatsAppIcon } from '@/components/icons';
 
 /** Botón flotante de WhatsApp (pulso sutil + hover). */
-export function WhatsAppFloat() {
+export function WhatsAppFloat({ parameters }: { parameters: Record<string, string> }) {
   const [mounted, setMounted] = useState(false);
 
   // Evita que el árbol inicial de Framer Motion difiera entre SSR y cliente.
@@ -14,9 +14,14 @@ export function WhatsAppFloat() {
 
   if (!mounted) return null;
 
+  const number = parameters['company.whatsapp'] || undefined;
+  const href = number
+    ? `https://wa.me/${number}?text=${encodeURIComponent(DEFAULT_WHATSAPP_MESSAGE)}`
+    : whatsappLink(DEFAULT_WHATSAPP_MESSAGE);
+
   return (
     <motion.a
-      href={whatsappLink(DEFAULT_WHATSAPP_MESSAGE)}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escríbenos por WhatsApp"

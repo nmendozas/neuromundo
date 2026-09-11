@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProductGallery from '@/components/sections/ProductGallery';
 import { notFound } from 'next/navigation';
-import { FALLBACK_PRODUCTS, siteConfig, whatsappLink } from '@/config/site';
+import { siteConfig, whatsappLink } from '@/config/site';
 import { fetchCatalogItems } from '@/server/data';
 import type { Item } from '@/types';
 
@@ -31,7 +31,7 @@ function normalizeItems(items: Item[]): DetailProduct[] {
     }));
   }
 
-  return FALLBACK_PRODUCTS.map((item) => ({ ...item, id: item.reference, unit: 'unidad', images: [] }));
+  return [];
 }
 
 export default async function CatalogDetailPage({ params }: { params: { id: string } }) {

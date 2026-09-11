@@ -19,6 +19,8 @@ const COMPANY_FIELDS: Array<[string, string]> = [
   ['company.whatsapp', 'WhatsApp (código país + número)'],
   ['company.email', 'Correo principal'],
   ['company.email2', 'Correo secundario'],
+  ['company.contact_name', 'Nombre del contacto'],
+  ['company.contact_role', 'Cargo del contacto'],
 ];
 
 const QUOTE_FIELDS: Array<[string, string]> = [

@@ -12,3 +12,4 @@ data/
 # Entorno
 .env
 .env.local
+*.tsbuildinfo

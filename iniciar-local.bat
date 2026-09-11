@@ -32,14 +32,12 @@ if not exist "backend\node_modules" (
 )
 
 rem --- Backend: compilar TypeScript ---
-if not exist "backend\dist\index.js" (
-  echo.
-  echo [2/3] Compilando backend TypeScript...
-  pushd backend
-  call npm run build
-  if errorlevel 1 ( popd & goto :error )
-  popd
-)
+echo.
+echo [2/3] Compilando backend TypeScript...
+pushd backend
+call npm run build
+if errorlevel 1 ( popd & goto :error )
+popd
 
 rem --- Frontend: dependencias ---
 if not exist "frontend\node_modules\next" (

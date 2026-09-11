@@ -4,7 +4,7 @@ import { useMemo, useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FALLBACK_PRODUCTS, siteConfig, whatsappLink } from '@/config/site';
+import { siteConfig, whatsappLink } from '@/config/site';
 import type { Item } from '@/types';
 import { clientFetch } from '@/lib/client-api';
 import { WhatsAppIcon } from '@/components/icons';
@@ -20,7 +20,7 @@ const catalogReveal = {
 };
 
 type CatalogProduct = { id: string; reference: string; name: string; category: string; description: string; unit: string; emoji: string; images: string[] };
-const normalizeItems = (items: Item[]): CatalogProduct[] => items.length ? items.map((item) => ({ id: String(item.id), reference: item.reference, name: item.name, category: item.category, description: item.description, unit: item.unit, emoji: item.emoji || '🩺', images: [item.image_1, item.image_2, item.image_3, item.image_4, item.image_5].filter(Boolean) })) : FALLBACK_PRODUCTS.map((item) => ({ ...item, id: item.reference, unit: 'unidad', images: [] }));
+const normalizeItems = (items: Item[]): CatalogProduct[] => items.map((item) => ({ id: String(item.id), reference: item.reference, name: item.name, category: item.category, description: item.description, unit: item.unit, emoji: item.emoji || '🩺', images: [item.image_1, item.image_2, item.image_3, item.image_4, item.image_5].filter(Boolean) }));
 const PAGE_SIZE_OPTIONS = [12, 24, 48, 96];
 
 export function CatalogBrowser({ items }: { items: Item[] }) {

@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { clientFetch } from '@/lib/client-api';
 import type { SiteInfo } from '@/types';
 import { Alert, Button, Card, Field, Input, Spinner, Textarea } from '@/components/admin/ui';
-import { DEFAULT_PORTFOLIO } from '@/config/site';
 
 const GROUPS: Array<{ title: string; fields: Array<[string, string]> }> = [
   {
@@ -56,10 +56,18 @@ const GROUPS: Array<{ title: string; fields: Array<[string, string]> }> = [
 
 const TEXTAREAS = new Set(['hero_subtitle', 'history_text', 'mission_text', 'vision_text', 'values_text', 'contact_text']);
 
+const TABS = [
+  { id: 'home', label: 'Inicio', groups: ['Hero (inicio)'] },
+  { id: 'about', label: 'Nosotros', groups: ['Historia', 'Misión', 'Visión', 'Valores'] },
+  { id: 'contact', label: 'Contacto', groups: ['Contacto'] },
+  { id: 'portfolio', label: 'Portafolio', groups: ['Portafolio público'] },
+] as const;
+
 export function ContentEditor() {
   const [content, setContent] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]['id']>('home');
   const [message, setMessage] = useState<{ tone: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
@@ -101,7 +109,22 @@ export function ContentEditor() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {message && <Alert tone={message.tone}>{message.text}</Alert>}
 
-      {GROUPS.map((group) => (
+      <div className="sticky top-4 z-20 flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-sm backdrop-blur">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
+              activeTab === tab.id ? 'bg-navy-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {GROUPS.filter((group) => (TABS.find((tab) => tab.id === activeTab)?.groups as readonly string[] | undefined)?.includes(group.title)).map((group) => (
         <Card key={group.title} title={group.title}>
           <div className="grid gap-4 sm:grid-cols-2">
             {group.fields.map(([key, label]) =>
@@ -119,31 +142,12 @@ export function ContentEditor() {
         </Card>
       ))}
 
-      <Card title="Portafolio público">
-        <p className="mb-4 text-sm text-slate-500">Edita las tarjetas y la vista personalizada de cada servicio. La URL se genera con el identificador del servicio.</p>
+      {activeTab === 'portfolio' && <Card title="Portafolio público">
+        <p className="mb-4 text-sm text-slate-500">Aquí solo se edita el contenido editorial. Las tarjetas y los ítems publicados se administran exclusivamente desde el catálogo.</p>
         <Field label="Título de la vista"><Input value={content.portfolio_title ?? ''} onChange={(e) => set('portfolio_title', e.target.value)} /></Field>
         <Field label="Subtítulo de la vista" className="mt-4"><Textarea rows={3} value={content.portfolio_subtitle ?? ''} onChange={(e) => set('portfolio_subtitle', e.target.value)} /></Field>
-        <div className="mt-6 space-y-5">
-          {(() => {
-            let services = DEFAULT_PORTFOLIO;
-            try { const parsed = JSON.parse(content.portfolio_services ?? 'null'); if (Array.isArray(parsed)) services = parsed; } catch { /* usa defaults */ }
-            return services.map((service, index) => (
-              <div key={service.id} className="rounded-xl border border-slate-200 p-4">
-                <p className="mb-3 font-semibold text-navy-900">{service.num}. {service.title}</p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Input aria-label="Título" value={service.title} onChange={(e) => { const next = [...services]; next[index] = { ...service, title: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Input aria-label="Categoría" value={service.category} onChange={(e) => { const next = [...services]; next[index] = { ...service, category: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Textarea aria-label="Descripción" rows={2} className="sm:col-span-2" value={service.description} onChange={(e) => { const next = [...services]; next[index] = { ...service, description: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Textarea aria-label="Detalles (uno por línea)" rows={4} className="sm:col-span-2" value={service.details.join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, details: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Textarea aria-label="Descripción completa" placeholder="Descripción que aparecerá en el detalle" rows={3} className="sm:col-span-2" value={service.longDescription ?? ''} onChange={(e) => { const next = [...services]; next[index] = { ...service, longDescription: e.target.value }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Textarea aria-label="Beneficios (uno por línea)" placeholder="Beneficios de la solución, uno por línea" rows={3} className="sm:col-span-2" value={(service.benefits ?? []).join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, benefits: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
-                  <Textarea aria-label="Proceso (uno por línea)" placeholder="Pasos del proceso, uno por línea" rows={3} className="sm:col-span-2" value={(service.process ?? []).join('\n')} onChange={(e) => { const next = [...services]; next[index] = { ...service, process: e.target.value.split('\n').filter(Boolean) }; set('portfolio_services', JSON.stringify(next)); }} />
-                </div>
-              </div>
-            ));
-          })()}
-        </div>
-      </Card>
+        <Link href="/admin/items" className="mt-6 inline-flex bg-navy-950 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white hover:bg-navy-800">Administrar ítems del catálogo →</Link>
+      </Card>}
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={saving}>{saving ? 'Guardando…' : '💾 Guardar contenido'}</Button>

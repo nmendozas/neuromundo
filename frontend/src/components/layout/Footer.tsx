@@ -2,8 +2,17 @@ import Image from 'next/image';
 import { siteConfig, whatsappLink } from '@/config/site';
 import { MailIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from '@/components/icons';
 
-export function Footer() {
+export function Footer({ parameters }: { parameters: Record<string, string> }) {
   const year = new Date().getFullYear();
+  const companyName = parameters['company.name'] || siteConfig.name;
+  const slogan = parameters['company.slogan'] || siteConfig.slogan;
+  const country = parameters['company.city'] || siteConfig.country;
+  const emails = [parameters['company.email'], parameters['company.email2']].filter(Boolean);
+  const whatsappNumber = parameters['company.whatsapp'] || siteConfig.whatsappNumber;
+  const whatsappDisplay = parameters['company.whatsapp'] || siteConfig.whatsappDisplay;
+  const phone = parameters['company.phone'] || siteConfig.phoneDisplay;
+  const phoneHref = phone.replace(/[^\d+]/g, '');
+  const contactWhatsApp = (message: string) => `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   return (
     <footer className="relative overflow-hidden border-t border-gold-500/30 bg-navy-950 text-slate-300">
@@ -33,17 +42,17 @@ export function Footer() {
         <div className="grid gap-12 py-14 text-center sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1.2fr] lg:gap-16 lg:py-16 lg:text-left">
           <div>
             <div className="flex items-center justify-center gap-3 lg:justify-start">
-              <Image src="/logo.png" alt="NeuroMundo S.A.S" width={357} height={204} className="h-11 w-auto object-contain" />
+              <Image src="/logo.png" alt={companyName} width={357} height={204} className="h-11 w-auto object-contain" />
               <div>
-                <p className="font-display text-lg font-semibold tracking-tight text-white">NeuroMundo <span className="text-gold-300">S.A.S</span></p>
+                <p className="font-display text-lg font-semibold tracking-tight text-white">{companyName}</p>
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">Salud · tecnología · gestión</p>
               </div>
             </div>
             <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-slate-400 lg:mx-0">
-              Servicios e insumos médicos para instituciones que buscan operar mejor. {siteConfig.slogan}
+              Servicios e insumos médicos para instituciones que buscan operar mejor. {slogan}
             </p>
             <p className="mt-6 flex items-center justify-center gap-2 text-xs uppercase tracking-wider text-slate-500 lg:justify-start">
-              <MapPinIcon className="h-4 w-4 text-gold-400" /> {siteConfig.country}
+              <MapPinIcon className="h-4 w-4 text-gold-400" /> {country}
             </p>
           </div>
 
@@ -61,15 +70,15 @@ export function Footer() {
           <div>
             <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.18em] text-gold-300">Conversemos</p>
             <ul className="space-y-4 text-sm">
-              {siteConfig.emails.map((email) => <li key={email}><a href={`mailto:${email}`} className="flex min-w-0 items-start gap-3 break-all transition-colors hover:text-gold-300"><MailIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />{email}</a></li>)}
-              <li><a href={whatsappLink('Hola NeuroMundo S.A.S 👋 Quisiera más información.')} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors hover:text-gold-300"><WhatsAppIcon className="h-4 w-4 shrink-0 text-gold-400" />{siteConfig.whatsappDisplay}</a></li>
-              <li><a href={`tel:+${siteConfig.phone}`} className="flex items-center gap-3 transition-colors hover:text-gold-300"><PhoneIcon className="h-4 w-4 shrink-0 text-gold-400" />{siteConfig.phoneDisplay}</a></li>
+              {emails.map((email) => <li key={email}><a href={`mailto:${email}`} className="flex min-w-0 items-start gap-3 break-all transition-colors hover:text-gold-300"><MailIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />{email}</a></li>)}
+              <li><a href={contactWhatsApp('Hola NeuroMundo S.A.S 👋 Quisiera más información.')} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors hover:text-gold-300"><WhatsAppIcon className="h-4 w-4 shrink-0 text-gold-400" />{whatsappDisplay}</a></li>
+              <li><a href={`tel:${phoneHref}`} className="flex items-center gap-3 transition-colors hover:text-gold-300"><PhoneIcon className="h-4 w-4 shrink-0 text-gold-400" />{phone}</a></li>
             </ul>
           </div>
         </div>
 
         <div className="flex flex-col items-center gap-4 border-t border-white/10 py-6 text-center text-[10px] uppercase tracking-wider text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p>© {year} {siteConfig.name}. Todos los derechos reservados.</p>
+          <p>© {year} {companyName}. Todos los derechos reservados.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end">
             <p>Hecho con <span className="text-gold-400">♥</span> para Colombia</p>
             <a href="/admin" className="transition-colors hover:text-gold-300">Acceso administrador</a>

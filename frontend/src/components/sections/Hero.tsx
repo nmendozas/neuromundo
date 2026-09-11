@@ -16,13 +16,14 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
-export function Hero({ content }: { content: Record<string, string> }) {
+export function Hero({ content, parameters }: { content: Record<string, string>; parameters: Record<string, string> }) {
   const title1 = content.hero_title_1 ?? 'Salud, tecnología y';
   const highlight = content.hero_title_highlight ?? 'soluciones';
   const title2 = content.hero_title_2 ?? 'para tu IPS';
-  const subtitle =
-    content.hero_subtitle ??
-    'Suministro médico especializado, tercerización de facturación y radicación ante ADRES, SOAT, ARL y EPS, y asesoría integral para instituciones de salud en Colombia.';
+  const subtitle = content.hero_subtitle ?? '';
+  const companyName = parameters['company.name'] ?? siteConfig.name;
+  const whatsappNumber = parameters['company.whatsapp'] ?? siteConfig.whatsappNumber;
+  const whatsappMessage = `Hola ${companyName} 👋 Quisiera información sobre sus insumos y servicios.`;
 
   return (
     <section id="top" className="relative overflow-hidden bg-navy-950 text-white">
@@ -77,7 +78,7 @@ export function Hero({ content }: { content: Record<string, string> }) {
               Contactar
             </a>
             <a
-              href={whatsappLink('Hola NeuroMundo S.A.S 👋 Quisiera información sobre sus insumos y servicios.')}
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-3.5 text-sm font-medium text-gold-300 transition-colors hover:text-gold-200"

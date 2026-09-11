@@ -41,6 +41,8 @@ export const DEFAULT_PARAMETERS: Record<string, string> = {
   'company.whatsapp': '573052743878',
   'company.email': 'gerencianeuromundo@gmail.com',
   'company.email2': 'conderamirojose@gmail.com',
+  'company.contact_name': 'Ramiro José Conde Hernández',
+  'company.contact_role': 'Gerente · Abogado',
   'quote.prefix': 'NM',
   'quote.iva': '19',
   'quote.valid_days': '30',
@@ -49,6 +51,154 @@ export const DEFAULT_PARAMETERS: Record<string, string> = {
   'quote.footer_note':
     'Los precios incluyen IVA. Cotización sujeta a disponibilidad de inventario y a condiciones comerciales pactadas.',
 };
+
+export interface DefaultItem {
+  reference: string;
+  name: string;
+  category: string;
+  description: string;
+  unit: string;
+  cost_price: number;
+  sale_price: number;
+  emoji: string;
+  featured: number;
+}
+
+/** Ítems médicos y suministros por defecto para el catálogo inicial. */
+export const DEFAULT_ITEMS: DefaultItem[] = [
+  {
+    reference: 'MAOS-01',
+    name: 'Placas de Osteosíntesis Bloqueadas LCP',
+    category: 'Osteosíntesis y Prótesis',
+    description: 'Sistema anatómico de titanio grado médico para reducción y fijación de fracturas complejas en miembros superiores e inferiores.',
+    unit: 'unidad',
+    cost_price: 320000,
+    sale_price: 490000,
+    emoji: '🦴',
+    featured: 1,
+  },
+  {
+    reference: 'MAOS-02',
+    name: 'Tornillos Canulados de Titanio Grado Médico',
+    category: 'Osteosíntesis y Prótesis',
+    description: 'Tornillos canulados autorroscantes para compresión interfragmentaria guiada de alta precisión.',
+    unit: 'unidad',
+    cost_price: 85000,
+    sale_price: 135000,
+    emoji: '🔩',
+    featured: 1,
+  },
+  {
+    reference: 'UCI-01',
+    name: 'Circuito de Ventilación Mecánica Adulto/Pediátrico',
+    category: 'UCI y Hospitalización',
+    description: 'Circuito corrugado doble rama con trampa de agua, línea de monitoreo y filtro bacteriano HMEF integrado.',
+    unit: 'set',
+    cost_price: 45000,
+    sale_price: 78000,
+    emoji: '🫁',
+    featured: 1,
+  },
+  {
+    reference: 'UCI-02',
+    name: 'Catéter Venoso Central Trilumen 7 Fr x 20 cm',
+    category: 'UCI y Hospitalización',
+    description: 'Kit estéril completo para acceso vascular central guiado por técnica Seldinger en cuidados intensivos.',
+    unit: 'kit',
+    cost_price: 65000,
+    sale_price: 110000,
+    emoji: '💉',
+    featured: 1,
+  },
+  {
+    reference: 'NEURO-01',
+    name: 'Sistema de Fijación y Craneoplastia de Titanio',
+    category: 'Neurocirugía',
+    description: 'Mallas conformables y miniplacas de bajo perfil para reconstrucción craneofacial y cierre de craneotomías.',
+    unit: 'unidad',
+    cost_price: 450000,
+    sale_price: 680000,
+    emoji: '🧠',
+    featured: 1,
+  },
+  {
+    reference: 'ORTO-01',
+    name: 'Prótesis Total de Cadera Modular',
+    category: 'Ortopedia y Artroplastia',
+    description: 'Vástago femoral de titanio poroso y cotiloilo acetabular de alta resistencia con recubrimiento de hidroxiapatita.',
+    unit: 'sistema',
+    cost_price: 2800000,
+    sale_price: 3950000,
+    emoji: '🦿',
+    featured: 0,
+  },
+  {
+    reference: 'UCI-03',
+    name: 'Tubo Endotraqueal con Aspiración Subglótica',
+    category: 'UCI y Hospitalización',
+    description: 'Tubo de PVC grado médico con balón de baja presión y canal auxiliar para prevención de neumonía asociada a ventilador.',
+    unit: 'unidad',
+    cost_price: 28000,
+    sale_price: 48000,
+    emoji: '🩺',
+    featured: 0,
+  },
+  {
+    reference: 'CIR-01',
+    name: 'Set Instrumental Quirúrgico de Laparoscopia HD',
+    category: 'Cirugía e Instrumental',
+    description: 'Disectores, pinzas Maryland, tijeras metzenbaum y trocares con aislamiento reforzado para cirugía mínimamente invasiva.',
+    unit: 'set',
+    cost_price: 1200000,
+    sale_price: 1750000,
+    emoji: '🔬',
+    featured: 0,
+  },
+  {
+    reference: 'DIAG-01',
+    name: 'Monitor de Signos Vitales Multiparámetro',
+    category: 'Equipos Médicos',
+    description: 'Monitoreo simultáneo de ECG de 5 derivadas, SpO2, PNI, frecuencia respiratoria, temperatura dual y capnografía.',
+    unit: 'equipo',
+    cost_price: 3500000,
+    sale_price: 4800000,
+    emoji: '📊',
+    featured: 0,
+  },
+  {
+    reference: 'INF-01',
+    name: 'Bomba de Infusión Volumétrica Peristáltica',
+    category: 'Equipos Médicos',
+    description: 'Bomba digital de alta precisión para infusión continua de soluciones y anestésicos con sistema antilibro y alarmas.',
+    unit: 'equipo',
+    cost_price: 2100000,
+    sale_price: 2950000,
+    emoji: '⚡',
+    featured: 0,
+  },
+  {
+    reference: 'CIR-02',
+    name: 'Suturas Quirúrgicas Sintéticas Absorbibles',
+    category: 'Cirugía e Instrumental',
+    description: 'Poliglactina 910 y polidioxanona con aguja atraumática de acero inoxidable serie 300 para aproximación de tejidos.',
+    unit: 'caja x 24',
+    cost_price: 95000,
+    sale_price: 145000,
+    emoji: '🧵',
+    featured: 0,
+  },
+  {
+    reference: 'ANEST-01',
+    name: 'Sensor de Oximetría SpO2 Reutilizable',
+    category: 'UCI y Hospitalización',
+    description: 'Sensor digital de pulso compatible con monitores de grado clínico para pacientes adultos y pediátricos.',
+    unit: 'unidad',
+    cost_price: 75000,
+    sale_price: 125000,
+    emoji: '🩻',
+    featured: 0,
+  },
+];
 
 /**
  * Crea las tablas (si no existen) y siembra el usuario admin,
@@ -190,7 +340,26 @@ export function runMigrations(db: Database.Database): void {
   for (const [key, value] of Object.entries(DEFAULT_PARAMETERS)) {
     upsertParam.run(key, value);
   }
+
+  // ─── Seed: catálogo de ítems inicial (si la tabla está vacía) ───
+  const countRow = db.prepare('SELECT count(*) as c FROM items').get() as { c: number };
+  if (countRow.c === 0) {
+    const insertItem = db.prepare(`
+      INSERT INTO items (reference, name, category, description, unit, cost_price, sale_price, emoji, featured, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    `);
+    for (const item of DEFAULT_ITEMS) {
+      insertItem.run(
+        item.reference,
+        item.name,
+        item.category,
+        item.description,
+        item.unit,
+        item.cost_price,
+        item.sale_price,
+        item.emoji,
+        item.featured,
+      );
+    }
+  }
 }
-
-
-

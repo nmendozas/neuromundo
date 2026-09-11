@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { formServiceOptions, siteConfig } from '@/config/site';
 import { Reveal } from '@/components/ui/Reveal';
+import { Combobox } from '@/components/ui/Combobox';
 import { clientFetch } from '@/lib/client-api';
 import { MailIcon, PhoneIcon, SendIcon, WhatsAppIcon } from '@/components/icons';
 
@@ -26,9 +27,8 @@ export function Contact({ content, parameters }: ContactProps) {
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -64,7 +64,10 @@ export function Contact({ content, parameters }: ContactProps) {
   const managerEmail = parameters['company.email'] ?? siteConfig.emails[0];
   const whatsappNumber = parameters['company.whatsapp'] ?? siteConfig.whatsappNumber;
   const phoneDisplay = parameters['company.phone'] ?? siteConfig.phoneDisplay;
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola NeuroMundo S.A.S 👋 Quisiera más información.')}`;
+  const contactName = parameters['company.contact_name'] ?? siteConfig.manager.name;
+  const contactRole = parameters['company.contact_role'] ?? siteConfig.manager.role;
+  const whatsappDisplay = parameters['company.whatsapp'] ?? siteConfig.whatsappDisplay;
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hola ${companyName} 👋 Quisiera más información.`)}`;
 
   return (
     <section id="contacto" className="relative overflow-hidden bg-navy-950 py-24 text-white sm:py-28">
@@ -97,8 +100,8 @@ export function Contact({ content, parameters }: ContactProps) {
             <Reveal delay={0.1}>
               <div className="mt-10 space-y-4">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gold-300">{siteConfig.manager.role}</p>
-                  <p className="mt-1 font-display text-lg font-bold text-white">{siteConfig.manager.name}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gold-300">{contactRole}</p>
+                  <p className="mt-1 font-display text-lg font-bold text-white">{contactName}</p>
                   <div className="mt-4 space-y-2.5 text-sm">
                     <a href={`mailto:${managerEmail}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
                       <MailIcon className="h-4 w-4 shrink-0 text-gold-400" />
@@ -106,9 +109,9 @@ export function Contact({ content, parameters }: ContactProps) {
                     </a>
                     <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
                       <WhatsAppIcon className="h-4 w-4 shrink-0 text-gold-400" />
-                      WhatsApp: {siteConfig.whatsappDisplay}
+                      WhatsApp: {whatsappDisplay}
                     </a>
-                    <a href={`tel:+${siteConfig.phone}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
+                    <a href={`tel:${phoneDisplay.replace(/[^\d+]/g, '')}`} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-gold-300">
                       <PhoneIcon className="h-4 w-4 shrink-0 text-gold-400" />
                       Celular: {phoneDisplay}
                     </a>
@@ -144,11 +147,14 @@ export function Contact({ content, parameters }: ContactProps) {
                 </label>
                 <label className="block">
                   <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">Línea de servicio</span>
-                  <select name="service" value={form.service} onChange={handleChange} className={inputClass}>
-                    {formServiceOptions.map((option) => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <Combobox
+                    value={form.service}
+                    options={formServiceOptions.map((option) => ({ value: option, label: option }))}
+                    onChange={(service) => setForm((prev) => ({ ...prev, service }))}
+                    className="!mt-0"
+                    placeholder="Selecciona una línea de servicio"
+                    searchPlaceholder="No se encontraron servicios"
+                  />
                 </label>
                 <label className="block sm:col-span-2">
                   <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">Mensaje</span>

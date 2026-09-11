@@ -132,6 +132,25 @@ export function ItemsManager() {
     }
   };
 
+  const toggleActive = async (item: Item) => {
+    try {
+      await clientFetch(`/api/items/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active: item.active ? 0 : 1 }),
+      });
+      setMessage({
+        tone: 'success',
+        text: item.active
+          ? `“${item.name}” quedó bloqueado y ya no se muestra públicamente.`
+          : `“${item.name}” quedó activo nuevamente.`,
+      });
+      await loadItems();
+    } catch (err) {
+      setMessage({ tone: 'error', text: err instanceof Error ? err.message : 'Error al cambiar el estado.' });
+    }
+  };
+
   const handleImport = async (file: File) => {
     if (!file) return;
     setImporting(true);
@@ -163,7 +182,12 @@ export function ItemsManager() {
       {message && <Alert tone={message.tone}>{message.text}</Alert>}
 
       <Card
-        title="Catálogo de ítems"
+        title={
+          <div>
+            <h1 className="font-display text-xl font-bold text-navy-900">Portafolio y catálogo</h1>
+            <p className="mt-1 text-sm font-normal text-slate-500">Administra qué servicios o productos aparecen y cuáles quedan bloqueados.</p>
+          </div>
+        }
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <label>
@@ -184,7 +208,7 @@ export function ItemsManager() {
             <a href="/api/items/export" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50">
               ⬇️ Exportar Excel
             </a>
-            <Button onClick={openNew}>+ Nuevo ítem</Button>
+            <Button onClick={openNew}>+ Agregar servicio</Button>
           </div>
         }
       >
@@ -209,29 +233,35 @@ export function ItemsManager() {
           </div>
         )}
 
-        <Input placeholder="🔍 Buscar por nombre, referencia o categoría…" value={search} onChange={(e) => setSearch(e.target.value)} className="mb-5 max-w-md" />
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div className="min-w-[min(100%,28rem)] flex-1">
+            <label htmlFor="items-search" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">Buscar en el portafolio</label>
+            <Input id="items-search" placeholder="Nombre, referencia o categoría…" value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+          <p className="pb-2 text-xs text-slate-500">{filtered.length} de {items.length} {items.length === 1 ? 'registro' : 'registros'}</p>
+        </div>
 
         {loading ? (
           <Spinner />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
+            <table className="w-full min-w-[900px] text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                  <th className="py-3 pr-4">Item</th>
+                  <th className="py-3 pr-4">Servicio / producto</th>
                   <th className="py-3 pr-4">Referencia</th>
                   <th className="py-3 pr-4">Categoría</th>
                   <th className="py-3 pr-4 text-right">Costo</th>
                   <th className="py-3 pr-4 text-right">Venta</th>
                   <th className="py-3 pr-4">Estado</th>
-                  <th className="py-3 pr-4">Inicio</th>
+                  <th className="py-3 pr-4">Visibilidad</th>
                   <th className="py-3 text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((item) => (
                   <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="py-3 pr-4">
+                    <td className="py-3 pr-4 align-top">
                       <div className="flex items-center gap-3">
                         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-xl">{item.emoji}</span>
                         <div>
@@ -240,20 +270,24 @@ export function ItemsManager() {
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 pr-4 font-mono text-xs">{item.reference}</td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3 pr-4 align-top font-mono text-xs">{item.reference}</td>
+                    <td className="py-3 pr-4 align-top">
                       <Badge className="bg-gold-50 text-gold-700">{item.category}</Badge>
                     </td>
-                    <td className="py-3 pr-4 text-right">{item.cost_price.toLocaleString('es-CO')}</td>
-                    <td className="py-3 pr-4 text-right font-semibold text-navy-900">{item.sale_price.toLocaleString('es-CO')}</td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3 pr-4 text-right align-top">{item.cost_price.toLocaleString('es-CO')}</td>
+                    <td className="py-3 pr-4 text-right align-top font-semibold text-navy-900">{item.sale_price.toLocaleString('es-CO')}</td>
+                    <td className="py-3 pr-4 align-top">
                       {item.active ? <Badge className="bg-emerald-100 text-emerald-700">Activo</Badge> : <Badge className="bg-slate-100 text-slate-500">Inactivo</Badge>}
                     </td>
-                    <td className="py-3 pr-4">{item.featured ? <Badge className="bg-gold-100 text-gold-700">Destacado</Badge> : <span className="text-slate-400">—</span>}</td>
-                    <td className="py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" onClick={() => openEdit(item)}>Editar</Button>
-                        <Button variant="danger" onClick={() => handleDelete(item)}>🗑</Button>
+                    <td className="py-3 pr-4 align-top">
+                      {item.active ? <Badge className="bg-emerald-100 text-emerald-700">Visible</Badge> : <Badge className="bg-slate-100 text-slate-500">Bloqueado</Badge>}
+                      {item.featured && <Badge className="ml-1 bg-gold-100 text-gold-700">Destacado</Badge>}
+                    </td>
+                    <td className="py-3 text-right align-top">
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <Button variant="ghost" onClick={() => toggleActive(item)}>{item.active ? 'Bloquear' : 'Activar'}</Button>
+                        <Button variant="secondary" onClick={() => openEdit(item)}>Editar</Button>
+                        <Button variant="danger" onClick={() => handleDelete(item)} aria-label={`Eliminar ${item.name}`}>Eliminar</Button>
                       </div>
                     </td>
                   </tr>
@@ -261,7 +295,7 @@ export function ItemsManager() {
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={8} className="py-10 text-center text-sm text-slate-400">
-                      No hay ítems. Crea uno o importa una hoja de cálculo.
+                      {search ? 'No hay resultados para esa búsqueda.' : 'No hay registros. Agrega un servicio o importa una hoja de cálculo.'}
                     </td>
                   </tr>
                 )}

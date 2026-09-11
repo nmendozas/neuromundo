@@ -15,9 +15,9 @@ export default async function Home() {
 
   return (
     <>
-      <Hero content={info.content} />
+      <Hero content={info.content} parameters={info.parameters} />
       <Services />
-      <Catalog items={items} />
+      <Catalog items={items} parameters={info.parameters} />
       <Contact content={info.content} parameters={info.parameters} />
     </>
   );

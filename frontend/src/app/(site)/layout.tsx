@@ -1,15 +1,18 @@
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { fetchPublicParameters } from '@/server/data';
 
 /** Layout del sitio público: navbar + footer + botón flotante de WhatsApp. */
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const parameters = await fetchPublicParameters();
+
   return (
     <>
-      <Navbar />
+      <Navbar parameters={parameters} />
       <main>{children}</main>
-      <Footer />
-      <WhatsAppFloat />
+      <Footer parameters={parameters} />
+      <WhatsAppFloat parameters={parameters} />
     </>
   );
 }

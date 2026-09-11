@@ -1,4 +1,4 @@
-import { DEFAULT_CONTENT, DEFAULT_PARAMETERS, DEFAULT_PORTFOLIO, type PortfolioService } from '@/config/site';
+import { DEFAULT_CONTENT, DEFAULT_PARAMETERS } from '@/config/site';
 import type { Item, SiteInfo } from '@/types';
 
 const API_URL = process.env.API_URL ?? 'http://localhost:4000';
@@ -24,6 +24,21 @@ export async function fetchSiteInfo(): Promise<SiteInfo> {
   }
 }
 
+/** Obtiene únicamente los datos operativos públicos usados por la página de inicio. */
+export async function fetchPublicParameters(): Promise<Record<string, string>> {
+  try {
+    const res = await fetch(`${API_URL}/api/content`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as { parameters?: Record<string, string> };
+    return { ...DEFAULT_PARAMETERS, ...(data.parameters ?? {}) };
+  } catch {
+    return DEFAULT_PARAMETERS;
+  }
+}
+
 /** Obtiene los ítems activos del catálogo (público). Vacío si la API falla. */
 export async function fetchCatalogItems(): Promise<Item[]> {
   try {
@@ -39,12 +54,3 @@ export async function fetchCatalogItems(): Promise<Item[]> {
   }
 }
 
-export async function fetchPortfolio(): Promise<PortfolioService[]> {
-  try {
-    const info = await fetchSiteInfo();
-    const parsed = JSON.parse(info.content.portfolio_services ?? 'null') as PortfolioService[];
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_PORTFOLIO;
-  } catch {
-    return DEFAULT_PORTFOLIO;
-  }
-}

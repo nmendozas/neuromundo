@@ -6,10 +6,11 @@ import Image from 'next/image';
 import { siteConfig } from '@/config/site';
 import { CloseIcon, MenuIcon } from '@/components/icons';
 
-export function Navbar() {
+export function Navbar({ parameters }: { parameters: Record<string, string> }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const getHref = (href: string) => (href.startsWith('#') ? `/${href}` : href);
+  const companyName = parameters['company.name'] || siteConfig.name;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -26,9 +27,9 @@ export function Navbar() {
     >
       <nav className="mx-auto flex min-h-[68px] max-w-7xl items-center justify-between gap-6 px-4 py-3.5 sm:px-6 lg:px-8">
         <a href="/" className="flex shrink-0 items-center gap-2.5">
-          <Image src="/logo.png" alt="NeuroMundo S.A.S" width={60} height={34} className="h-[34px] w-auto object-contain" priority />
+          <Image src="/logo.png" alt={companyName} width={60} height={34} className="h-[34px] w-auto object-contain" priority />
           <span className="font-display text-[15px] font-semibold tracking-[0.03em] text-gold-300">
-            NeuroMundo S.A.S
+            {companyName}
           </span>
         </a>
 
